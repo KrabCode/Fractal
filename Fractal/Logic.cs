@@ -16,7 +16,7 @@ namespace Fractal
         private bool busy;
 
         
-        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity)
+        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity, int size)
         {
             if(!busy)
             {
@@ -33,7 +33,7 @@ namespace Fractal
                 Pen blackPen = new Pen(new SolidBrush(Color.FromArgb(penOpacity,Color.Black)));
 
 
-                Branch root = new Branch(new Point(width / 2, height / 2 + 25), new Point(width / 2, height / 2 - 25), blackPen, childDeviation, childCount);
+                Branch root = new Branch(new Point(width / 2, height / 2 + size), new Point(width / 2, height / 2 - size), blackPen, childDeviation, childCount);
                 root.Populate();
                 
                 g.DrawLine(blackPen, root.Origin, root.End);

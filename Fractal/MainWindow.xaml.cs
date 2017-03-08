@@ -22,6 +22,15 @@ namespace Fractal
     public partial class MainWindow : Window
     {
         private Logic _logic;
+
+
+        double deviation = 0;
+        int detail = 6;
+        int childCount = 4;
+        int penOpacity = 50;
+        int size = 20;
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,10 +56,10 @@ namespace Fractal
         }
 
 
-        double deviation = 0;
-        int detail = 5;
-        int childCount = 2;
-        int penOpacity = 50;
+        private void TryRedraw()
+        {
+            Task t = Task.Run(delegate { _logic.Start(1920, 1080, deviation, detail, childCount, penOpacity, size); });
+        }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -76,9 +85,10 @@ namespace Fractal
             TryRedraw();
         }
 
-        private void TryRedraw()
+        private void sliderSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Task t = Task.Run(delegate { _logic.Start(1920, 1080, deviation, detail, childCount, penOpacity); });
+            size = (int)sliderSize.Value;
+            TryRedraw();
         }
     }
 }
