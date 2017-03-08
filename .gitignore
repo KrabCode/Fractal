@@ -3,9 +3,7 @@
 *.user
 _ReSharper.*/
 *.sdf
-bin/
 obj/
-Release/
 *.opensdf
 *.tlog
 *.log
