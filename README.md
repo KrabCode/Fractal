@@ -1,3 +1,3 @@
 # Fractal
 
-Use this simple WPF application to generace various recursive trees of black lines.
+Use this simple WPF application to generate various recursive trees of black lines.
