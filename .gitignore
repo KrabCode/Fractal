@@ -182,9 +182,7 @@ _pkginfo.txt
 !*.[Cc]ache/
 
 # Others
-ClientBin/
-~$*
-*~
+
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
