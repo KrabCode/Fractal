@@ -31,12 +31,16 @@ namespace Fractal
 
 
                 Pen blackPen = new Pen(new SolidBrush(Color.FromArgb(penOpacity,Color.Black)));
+                SolidBrush backgroundBrush = new SolidBrush(Color.White);
 
+                
 
                 Branch root = new Branch(new Point(width / 2, height / 2 + size), new Point(width / 2, height / 2 - size), blackPen, childDeviation, childCount);
                 root.Populate();
-                
+
+                g.FillRectangle(backgroundBrush, 0, 0, width, height);
                 g.DrawLine(blackPen, root.Origin, root.End);
+
                 foreach (Branch child in root.Children)
                 {
                     branchesToPopulate.Add(child);
