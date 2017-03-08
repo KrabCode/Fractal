@@ -5,13 +5,12 @@ _ReSharper.*/
 *.sdf
 bin/
 obj/
-Debug/
 Release/
 *.opensdf
 *.tlog
 *.log
 TestResult.xml
-*.VisualState.xml
+*.VisualState.xml 
 Version.cs
 Version.h
 Version.cpp
