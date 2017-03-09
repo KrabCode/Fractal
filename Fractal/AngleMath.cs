@@ -9,10 +9,10 @@ namespace Fractal
 {
     public static class AngleMath
     {
-        public static Point GetPointOnEdgeOfCircle(double x0, double y0, double radius, double angleInDegrees)
+        public static Point GetPointOnEdgeOfCircle(double x0, double y0, double radius, double angleInDegrees, double piOffset)
         {
-            double x = x0 + radius * Math.Cos(angleInDegrees * Math.PI / 180);
-            double y = y0 + radius * Math.Sin(angleInDegrees * Math.PI / 180);
+            double x = x0 + radius * Math.Cos(angleInDegrees * (Math.PI + piOffset )/ 180);
+            double y = y0 + radius * Math.Sin(angleInDegrees * (Math.PI + piOffset )/ 180);
 
             return new Point((int)x, (int)y);
         }

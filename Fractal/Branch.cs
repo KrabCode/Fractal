@@ -16,11 +16,13 @@ namespace Fractal
         public double Angle { get; set; }
 
 
+
+        private double _piOffset { get; set; }
         private double _childDeviation { get; set; }
         private int _childCount { get; set; }
         private double _length { get; set; }
 
-        public Branch(Point origin, Point end, Pen pen, double childDeviation, int childCount)
+        public Branch(Point origin, Point end, Pen pen, double childDeviation, int childCount, double piOffset)
         {
             Origin = origin;
             End = end;
@@ -28,6 +30,7 @@ namespace Fractal
             Angle = AngleMath.GetAngleInDegrees(Origin, End);
             Children = new List<Branch>();
 
+            _piOffset = piOffset;
             _childDeviation = childDeviation;            
             _length = AngleMath.GetDistance(Origin, End);
             _childCount = childCount;
@@ -41,10 +44,10 @@ namespace Fractal
             while (Children.Count <= _childCount)
             {
                 double childEndAngle = minAngle + (childAngleStep * Children.Count);
-                Point childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X, End.Y, _length, childEndAngle);
+                Point childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X, End.Y, _length, childEndAngle, _piOffset);
                 
 
-                Branch child = new Branch(End, childEndPoint, Pen, _childDeviation, _childCount);
+                Branch child = new Branch(End, childEndPoint, Pen, _childDeviation, _childCount, _piOffset);
                 Children.Add(child);
             }
         }

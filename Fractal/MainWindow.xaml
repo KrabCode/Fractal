@@ -31,13 +31,14 @@
             <Label Content="Branch count:" Grid.Row="2" Grid.Column="0"  />
             <Label Content="Pen opacity:" Grid.Row="1" Grid.Column="2"  />
             <Label Content="Size:" Grid.Row="0" Grid.Column="2"  />
+            <Label Content="Pi offset:" Grid.Row="3" Grid.Column="2"  />
             <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="1" Maximum="180" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
             <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="15" Value="6"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
             <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="1" Minimum="1" Maximum="15" Value="4"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
             <Slider x:Name="sliderPenOpacity" Grid.Row="1" Grid.Column="3" Minimum="1" Maximum="255" Value="50"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"  />
-            <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="3" Minimum="1" Maximum="100" Value="20"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
-            <Button x:Name="btSave" Content="Save..." Grid.Column="3"  Grid.Row="2" Click="btSave_Click_1"  />
+            <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="3" Minimum="1" Maximum="1000" Value="20"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
+            <Slider x:Name="sliderPiOffset" Grid.Row="2" Grid.Column="3" Minimum="-10" Maximum="10" Value="0" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPiOffset_ValueChanged"/>
         </Grid>
-
+        <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
     </Grid>
 </Window>

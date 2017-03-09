@@ -16,7 +16,7 @@ namespace Fractal
         private bool busy;
 
         
-        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity, int size)
+        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity, int size, double piOffset)
         {
             if(!busy)
             {
@@ -35,7 +35,7 @@ namespace Fractal
 
                 
 
-                Branch root = new Branch(new Point(width / 2, height / 2 + size), new Point(width / 2, height / 2 - size), blackPen, childDeviation, childCount);
+                Branch root = new Branch(new Point(width / 2, height / 2 + size), new Point(width / 2, height / 2 - size), blackPen, childDeviation, childCount, piOffset);
                 root.Populate();
 
                 g.FillRectangle(backgroundBrush, 0, 0, width, height);
@@ -59,13 +59,12 @@ namespace Fractal
                             }
                         }
                     }
-
                     levelOfDetail++;
                 }
 
                 foreach (Branch b in branchesToPopulate)
                 {
-                    g.DrawLine(blackPen, b.Origin, b.End);
+                    g.DrawLine(b.Pen, b.Origin, b.End);
                 }
 
                 RedrawImage(this, new RedrawEventArgs(_offscreen));

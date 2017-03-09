@@ -29,11 +29,12 @@ namespace Fractal
         private Logic _logic;
         private Bitmap displayedBitmap;
         private Random _random = new Random();
-        private double deviation = 0;
-        private int detail = 6;
-        private int childCount = 4;
-        private int penOpacity = 50;
-        private int size = 20;
+        private double _deviation = 0;
+        private double _piOffset = 0;
+        private int _detail = 6;
+        private int _childCount = 4;
+        private int _penOpacity = 50;
+        private int _size = 20;
 
 
         public MainWindow()
@@ -62,6 +63,12 @@ namespace Fractal
             return null;
         }
 
+        private void TryRedraw()
+        {
+            Task t = Task.Run(delegate { _logic.Start(1920, 1080, _deviation, _detail, _childCount, _penOpacity, _size, _piOffset); });
+        }
+
+        #region Save button wiring
         public void SaveImageToFile(string filePath, Bitmap image, KnownImageFormat format)
         {
 
@@ -120,15 +127,7 @@ namespace Fractal
             char let = (char)('a' + num);
             return let;
         }
-
-        
-
-        private void TryRedraw()
-        {
-            Task t = Task.Run(delegate { _logic.Start(1920, 1080, deviation, detail, childCount, penOpacity, size); });
-        }
-
-
+                
         private void btSave_Click_1(object sender, RoutedEventArgs e)
         {
             if (displayedBitmap != null)
@@ -167,35 +166,45 @@ namespace Fractal
                 }
             }
         }
+        #endregion
 
+        #region Slider wiring
         private void sliderDeviation_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            deviation = sliderDeviation.Value;
+            _deviation = sliderDeviation.Value;
             TryRedraw();
         }
 
         private void sliderSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            size = (int)sliderSize.Value;
+            _size = (int)sliderSize.Value;
             TryRedraw();
         }
 
         private void sliderDetail_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            detail = (int)sliderDetail.Value;
+            _detail = (int)sliderDetail.Value;
             TryRedraw();
         }
 
         private void sliderPenOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            penOpacity = (int)sliderPenOpacity.Value;
+            _penOpacity = (int)sliderPenOpacity.Value;
             TryRedraw();
         }
 
         private void sliderChildCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            childCount = (int)sliderChildCount.Value;
+            _childCount = (int)sliderChildCount.Value;
+            TryRedraw();
+        }
+        
+
+        private void sliderPiOffset_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _piOffset = sliderPiOffset.Value;
             TryRedraw();
         }
     }
+    #endregion
 }

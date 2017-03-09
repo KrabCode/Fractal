@@ -12,3 +12,17 @@ C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.Properties.Res
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.csproj.GenerateResource.Cache
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.exe
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.pdb
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\bin\Debug\Fractal.exe.config
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\bin\Debug\Fractal.exe
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\bin\Debug\Fractal.pdb
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.csprojResolveAssemblyReference.cache
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\MainWindow.g.cs
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\App.g.cs
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal_MarkupCompile.cache
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal_MarkupCompile.lref
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\MainWindow.baml
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.g.resources
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.Properties.Resources.resources
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.csproj.GenerateResource.Cache
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.exe
+C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.pdb
