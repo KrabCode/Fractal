@@ -9,8 +9,8 @@ namespace Fractal
 {
     class Branch
     {
-        public Point Origin { get; set; }
-        public Point End { get; set; }
+        public PointF Origin { get; set; }
+        public PointF End { get; set; }
         public Pen Pen { get; set; }
         public List<Branch> Children { get; set; }
         public double Angle { get; set; }
@@ -22,7 +22,7 @@ namespace Fractal
         private int _childCount { get; set; }
         private double _length { get; set; }
 
-        public Branch(Point origin, Point end, Pen pen, double childDeviation, int childCount, double piOffset)
+        public Branch(PointF origin, PointF end, Pen pen, double childDeviation, int childCount, double piOffset)
         {
             Origin = origin;
             End = end;
@@ -44,9 +44,8 @@ namespace Fractal
             while (Children.Count <= _childCount)
             {
                 double childEndAngle = minAngle + (childAngleStep * Children.Count);
-                Point childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X, End.Y, _length, childEndAngle, _piOffset);
+                PointF childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X, End.Y, _length, childEndAngle, _piOffset);
                 
-
                 Branch child = new Branch(End, childEndPoint, Pen, _childDeviation, _childCount, _piOffset);
                 Children.Add(child);
             }
