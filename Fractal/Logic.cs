@@ -14,11 +14,11 @@ namespace Fractal
         private Bitmap _offscreen;
 
         private bool busy;
-
         
-        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity, int size, double piOffset)
+        
+        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity, int size, double piOffset, int rootCount)
         {
-            if(!busy)
+            if (!busy)
             {
 
                 int levelOfDetail = 0;
@@ -30,21 +30,26 @@ namespace Fractal
                 List<Branch> branchesToPopulate = new List<Branch>();
 
 
-                Pen blackPen = new Pen(new SolidBrush(Color.FromArgb(penOpacity,Color.Black)));
+                Pen foregroundPen = new Pen(new SolidBrush(Color.FromArgb(penOpacity, Color.Black)),2);
                 SolidBrush backgroundBrush = new SolidBrush(Color.White);
+                g.FillRectangle(backgroundBrush, 0, 0, width, height);
+
+                int angleStep = 360 / rootCount;
+                Point center = new Point(width / 2, height / 2);
+                for (int i = 0; i < rootCount; i++ )
+                {
+
+                    Branch root = new Branch(center, AngleMath.GetPointOnEdgeOfCircle(center.X, center.Y, size, (double)i*angleStep - 90, piOffset), foregroundPen, childDeviation, childCount, piOffset);
+                    root.Populate();
+                    g.DrawLine(foregroundPen, root.Origin, root.End);
+
+                    foreach (Branch child in root.Children)
+                    {
+                        branchesToPopulate.Add(child);
+                    }
+                }
 
                 
-
-                Branch root = new Branch(new Point(width / 2, height / 2 + size), new Point(width / 2, height / 2 - size), blackPen, childDeviation, childCount, piOffset);
-                root.Populate();
-
-                g.FillRectangle(backgroundBrush, 0, 0, width, height);
-                g.DrawLine(blackPen, root.Origin, root.End);
-
-                foreach (Branch child in root.Children)
-                {
-                    branchesToPopulate.Add(child);
-                }
                 while (levelOfDetail < maxLevelOfDetail)
                 {
                     int branchesToPopulateCount = branchesToPopulate.Count;
