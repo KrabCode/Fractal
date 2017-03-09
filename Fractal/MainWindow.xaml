@@ -21,17 +21,17 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="9*"/>
-                <ColumnDefinition Width="19*"/>
-                <ColumnDefinition Width="9*"/>
-                <ColumnDefinition Width="19*"/>
+                <ColumnDefinition Width="82*"/>
+                <ColumnDefinition Width="242*"/>
+                <ColumnDefinition Width="71*"/>
+                <ColumnDefinition Width="109*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Deviation:" Grid.Row="0" Grid.Column="0"  />
-            <Label Content="Detail:" Grid.Row="1" Grid.Column="0" />
-            <Label Content="Branch count:" Grid.Row="2" Grid.Column="0"  />
-            <Label Content="Pen opacity:" Grid.Row="1" Grid.Column="2"  />
-            <Label Content="Size:" Grid.Row="0" Grid.Column="2"  />
-            <Label Content="Pi offset:" Grid.Row="3" Grid.Column="2"  />
+            <Label Content="Deviation:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="63"  />
+            <Label Content="Branch length:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="-3,0,0,0" Width="85"  />
+            <Label Content="Branch count:" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Width="82"   />
+            <Label Content="Pen opacity:" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="74" Grid.ColumnSpan="2"  />
+            <Label Content="Size:" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="34"   />
+            <Label Content="Pi offset:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Width="55"  />
             <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="1" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
             <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="15" Value="6"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
             <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="1" Minimum="1" Maximum="15" Value="4"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
