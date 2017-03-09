@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fractal"
         mc:Ignorable="d"
-        Title="MainWindow" Height="537.052" Width="511.972">
+        Title="Fractal" Height="537.052" Width="511.972">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />

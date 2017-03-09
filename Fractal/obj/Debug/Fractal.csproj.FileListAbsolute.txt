@@ -5,7 +5,6 @@ C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal_MarkupCompile.
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\bin\Debug\Fractal.exe.config
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\bin\Debug\Fractal.exe
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\bin\Debug\Fractal.pdb
-C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.csprojResolveAssemblyReference.cache
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\MainWindow.baml
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.g.resources
 C:\Users\jakub Rak\Source\Repos\Fractal\Fractal\obj\Debug\Fractal.Properties.Resources.resources
