@@ -29,6 +29,11 @@ namespace Fractal
         private Logic _logic;
         private Bitmap displayedBitmap;
         private Random _random = new Random();
+        private bool _autosave = false;
+        private int _autosavedPicsAlready = 0;
+        string _autosaveDirectory = "C:\\Branch generator\\";
+        private double _deviationChangeBetweenFrames = 1;
+
         private double _deviation = 0;
         private double _piOffset = 0;
         private int _detail = 6;
@@ -59,11 +64,26 @@ namespace Fractal
 
         private EventHandler _logic_Redraw(object sender, RedrawEventArgs e)
         {
+                            
             displayedBitmap = new Bitmap(e.imageToDraw);
-            Application.Current.Dispatcher.Invoke(new Action(() => {
-                imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
-            }));
-           
+
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    if (_autosave)
+                    {
+                        string filepath = _autosaveDirectory + "img_" + _autosavedPicsAlready++ + ".png";
+                        SaveImageToFile(filepath, (Bitmap)e.imageToDraw.Clone(), KnownImageFormat.png);      
+                        
+                        if(sliderDeviation.Value < sliderDeviation.Maximum)
+                        {
+                            sliderDeviation.Value += _deviationChangeBetweenFrames;
+                        }
+                        
+                        
+                    }
+                    imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
+                }));
+            
             return null;
         }
 
@@ -219,6 +239,13 @@ namespace Fractal
         private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _penWidth = (int)sliderPenWidth.Value;
+            TryRedraw();
+        }
+
+        private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
+        {
+            sliderDeviation.Value = 0;
+            _autosave = (bool)checkboxAutosave.IsChecked;
             TryRedraw();
         }
     }

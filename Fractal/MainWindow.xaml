@@ -45,5 +45,6 @@
             <Slider x:Name="sliderPenWidth" Grid.Row="2" Grid.Column="3" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenWidth_ValueChanged"/>
         </Grid>
         <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+        <CheckBox x:Name="checkboxAutosave" Content="Save all deviations" HorizontalAlignment="Left" VerticalAlignment="Bottom" OpacityMask="#7F000000" Click="checkboxAutosave_Click"/>
     </Grid>
 </Window>

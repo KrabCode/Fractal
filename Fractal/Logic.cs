@@ -72,9 +72,11 @@ namespace Fractal
                     g.DrawLine(b.Pen, b.Origin, b.End);
                 }
 
-                RedrawImage(this, new RedrawEventArgs(_offscreen));
                 levelOfDetail = 0;
                 busy = false;
+
+                RedrawImage(this, new RedrawEventArgs(_offscreen));
+                
             }            
         }
     }
