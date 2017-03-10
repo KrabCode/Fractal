@@ -34,10 +34,12 @@ namespace Fractal
         private int _detail = 6;
         private int _childCount = 4;
         private int _penOpacity = 50;
+        private int _penWidth = 1;
         private int _size = 20;
         private int _resolutionX = 1920;
         private int _resolutionY = 1080;
         private int _rootCount = 1;
+        
 
         public MainWindow()
         {
@@ -67,7 +69,7 @@ namespace Fractal
 
         private void TryRedraw()
         {
-            Task t = Task.Run(delegate { _logic.Start(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penOpacity, _size, _piOffset, _rootCount); });
+            Task t = Task.Run(delegate { _logic.Start(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penOpacity, _penWidth, _size, _piOffset, _rootCount); });
         }
 
         #region Save button wiring
@@ -211,6 +213,12 @@ namespace Fractal
         private void sliderRootCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _rootCount = (int)sliderRootCount.Value;
+            TryRedraw();
+        }
+
+        private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _penWidth = (int)sliderPenWidth.Value;
             TryRedraw();
         }
     }
