@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -16,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 public enum KnownImageFormat { bmp, png, jpeg, gif };
 
 namespace Fractal
@@ -67,7 +69,7 @@ namespace Fractal
                             
             displayedBitmap = new Bitmap(e.imageToDraw);
 
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     if (_autosave)
                     {
@@ -77,9 +79,14 @@ namespace Fractal
                         if(sliderDeviation.Value < sliderDeviation.Maximum)
                         {
                             sliderDeviation.Value += _deviationChangeBetweenFrames;
+                            
                         }
-                        
-                        
+                        else
+                        {
+                            System.Windows.MessageBox.Show("All deviations were saved to " + _autosaveDirectory);
+                            _autosave = false;
+                            checkboxAutosave.IsChecked = false;
+                        }
                     }
                     imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
                 }));
@@ -156,7 +163,7 @@ namespace Fractal
         {
             if (displayedBitmap != null)
             {
-                SaveFileDialog sfd = new SaveFileDialog();
+                Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
                 sfd.Title = "Save image";
                 sfd.Filter = ".png|*.png|.bmp|*.bmp|.jpg|*.jpg|.gif(stationary)|*.gif";
                 //find the best possible name for the new file,
@@ -244,9 +251,19 @@ namespace Fractal
 
         private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
         {
-            sliderDeviation.Value = 0;
-            _autosave = (bool)checkboxAutosave.IsChecked;
-            TryRedraw();
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select the folder to save all deviations of the selected settings to.";
+                DialogResult result = fbd.ShowDialog();
+
+                if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    _autosaveDirectory = fbd.SelectedPath + "\\";
+                    sliderDeviation.Value = 0;
+                    _autosave = (bool)checkboxAutosave.IsChecked;
+                    TryRedraw();
+                }
+            }
         }
     }
     #endregion
