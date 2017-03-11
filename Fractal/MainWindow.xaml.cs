@@ -253,7 +253,7 @@ namespace Fractal
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                fbd.Description = "Select the folder to save all deviations of the selected settings to.";
+                fbd.Description = "Select or create a folder to save all the deviations of the selected settings to:";
                 DialogResult result = fbd.ShowDialog();
 
                 if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
