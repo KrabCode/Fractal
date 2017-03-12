@@ -28,13 +28,13 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="Deviation:" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="63" FontWeight="Bold"  />
+            <Label Content="Deviation:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="63" FontWeight="Bold"  />
             <Label Content="Generations:" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"  />
             <Label Content="Branch count:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"    />
             <Label Content="Size:" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"    />
             <Label Content="Pi offset:" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right"   />
             <Label Content="Root count:" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Right"  />
-            <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="3" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
+            <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
             <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="3" Minimum="1" Maximum="10" Value="3"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
             <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="3" Minimum="1" Maximum="15" Value="5"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
             <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="5" Minimum="1" Maximum="3000" Value="100"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
