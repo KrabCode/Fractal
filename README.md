@@ -10,3 +10,4 @@ Install:
 - https://github.com/KrabCode/Fractal/raw/master/Fractal/bin/Release/Fractal.exe
 - Run Fractal.exe
 - Windows may freak out. Just click on 'more info' and let it through.
+- If you put the app under a lot of stress, it will stop responding. Be prepared to ALT+SHIFT+ESC your way out.
