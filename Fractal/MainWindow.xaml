@@ -37,13 +37,13 @@
             <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="3" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
             <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="3" Minimum="1" Maximum="10" Value="3"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
             <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="3" Minimum="1" Maximum="15" Value="5"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
-            <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="5" Minimum="1" Maximum="10000" Value="100"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
+            <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="5" Minimum="1" Maximum="3000" Value="100"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
             <Slider x:Name="sliderPiOffset" Grid.Row="2" Grid.Column="5" Minimum="-10" Maximum="10" Value="0" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPiOffset_ValueChanged"/>
-            <Slider x:Name="sliderRootCount" Grid.Row="1" Grid.Column="5" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderRootCount_ValueChanged"/>
-            <Slider x:Name="sliderPenWidth" Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenWidth_ValueChanged"/>
-            <Slider x:Name="sliderPenOpacity" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="255" Value="80" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"/>
-            <Label Content="Pen width:" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" />
-            <Label Content="Pen opacity:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" />
+            <Slider x:Name="sliderRootCount" Grid.Row="1" Grid.Column="5" Minimum="1" Maximum="10" Value="4" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderRootCount_ValueChanged"/>
+            <Slider x:Name="sliderPenWidth" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="10" Value="2" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenWidth_ValueChanged"/>
+            <Slider x:Name="sliderPenOpacity" Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="255" Value="80" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"/>
+            <Label Content="Pen width:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" />
+            <Label Content="Pen opacity:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" />
         </Grid>
         <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" />
         <Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="121" OpacityMask="#7F000000" Background="#4CAEADAD" >
