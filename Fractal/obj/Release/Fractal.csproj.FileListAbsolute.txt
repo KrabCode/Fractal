@@ -25,4 +25,3 @@ C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Release\Fractal.Properties.Resou
 C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Release\Fractal.csproj.GenerateResource.Cache
 C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Release\Fractal.exe
 C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Release\Fractal.pdb
-C:\Users\Jakub\Source\Repos\Fractal\Fractal\obj\Release\Fractal.csprojResolveAssemblyReference.cache
