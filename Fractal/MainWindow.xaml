@@ -29,7 +29,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Content="Deviation:" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="63" FontWeight="Bold"  />
-            <Label Content="Branch length:" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"  />
+            <Label Content="Generations:" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"  />
             <Label Content="Branch count:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"    />
             <Label Content="Size:" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"    />
             <Label Content="Pi offset:" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right"   />
@@ -41,12 +41,12 @@
             <Slider x:Name="sliderPiOffset" Grid.Row="2" Grid.Column="5" Minimum="-10" Maximum="10" Value="0" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPiOffset_ValueChanged"/>
             <Slider x:Name="sliderRootCount" Grid.Row="1" Grid.Column="5" Minimum="1" Maximum="10" Value="4" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderRootCount_ValueChanged"/>
             <Slider x:Name="sliderPenWidth" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="10" Value="2" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenWidth_ValueChanged"/>
-            <Slider x:Name="sliderPenOpacity" Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="255" Value="80" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"/>
+            <Slider x:Name="sliderPenOpacity" Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="255" Value="80" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"/>
             <Label Content="Pen width:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" />
-            <Label Content="Pen opacity:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" />
+            <Label Content="Pen opacity:" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" />
         </Grid>
         <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" />
-        <Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="121" OpacityMask="#7F000000" Background="#4CAEADAD" >
+        <Grid  HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="100" Width="121" OpacityMask="#7F000000" Background="#4CAEADAD" >
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
