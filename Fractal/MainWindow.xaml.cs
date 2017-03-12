@@ -47,7 +47,7 @@ namespace Fractal
         private int _resolutionX = 1920;
         private int _resolutionY = 1080;
         private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
-        private Brush _brushBackground = new SolidBrush(Color.Wheat);
+        private Brush _brushBackground = new SolidBrush(Color.White);
         private int _rootCount = 1;
         
 
