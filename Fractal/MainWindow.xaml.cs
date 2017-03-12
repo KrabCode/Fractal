@@ -13,7 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -31,7 +30,9 @@ namespace Fractal
         private Logic _logic;
         private Bitmap displayedBitmap;
         private Random _random = new Random();
-        private bool _autosave = false;
+        private bool _animate;
+        private bool _animatingForwards;
+        private bool _animateAndSave = false;        
         private int _autosavedPicsAlready = 0;
         string _autosaveDirectory = "C:\\Branch generator\\";
         private double _deviationChangeBetweenFrames = 1;
@@ -45,6 +46,8 @@ namespace Fractal
         private int _size = 20;
         private int _resolutionX = 1920;
         private int _resolutionY = 1080;
+        private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
+        private Brush _brushBackground = new SolidBrush(Color.Wheat);
         private int _rootCount = 1;
         
 
@@ -56,8 +59,6 @@ namespace Fractal
 
         private void Init()
         {
-            this.WindowState = WindowState.Maximized;
-
             _logic = new Logic();
             _logic.RedrawImage += _logic_Redraw;
 
@@ -71,7 +72,8 @@ namespace Fractal
 
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    if (_autosave)
+                    
+                    if (_animateAndSave)
                     {
                         string filepath = _autosaveDirectory + "img_" + _autosavedPicsAlready++ + ".png";
                         SaveImageToFile(filepath, (Bitmap)e.imageToDraw.Clone(), KnownImageFormat.png);      
@@ -84,9 +86,35 @@ namespace Fractal
                         else
                         {
                             System.Windows.MessageBox.Show("All deviations were saved to " + _autosaveDirectory);
-                            _autosave = false;
+                            _animateAndSave = false;
                             checkboxAutosave.IsChecked = false;
                         }
+                    }
+                    else if (_animate)
+                    {
+                        if(_animatingForwards)
+                        {
+                            if (sliderDeviation.Value < sliderDeviation.Maximum)
+                            {
+                                sliderDeviation.Value += _deviationChangeBetweenFrames;
+                            }
+                            else
+                            {
+                                _animatingForwards = false;                                
+                            }
+                        }
+                        else
+                        {
+                            if (sliderDeviation.Value != 0 )
+                            {
+                                sliderDeviation.Value -= _deviationChangeBetweenFrames;
+                            }
+                            else
+                            {
+                                _animatingForwards = true;                                
+                            }
+                        }
+                        TryRedraw();
                     }
                     imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
                 }));
@@ -96,7 +124,7 @@ namespace Fractal
 
         private void TryRedraw()
         {
-            Task t = Task.Run(delegate { _logic.Start(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penOpacity, _penWidth, _size, _piOffset, _rootCount); });
+            Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount); });
         }
 
         #region Save button wiring
@@ -217,10 +245,10 @@ namespace Fractal
             _detail = (int)sliderDetail.Value;
             TryRedraw();
         }
-
-        private void sliderPenOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        
+        private void sliderRootCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _penOpacity = (int)sliderPenOpacity.Value;
+            _rootCount = (int)sliderRootCount.Value;
             TryRedraw();
         }
 
@@ -230,24 +258,15 @@ namespace Fractal
             TryRedraw();
         }
         
-
         private void sliderPiOffset_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _piOffset = sliderPiOffset.Value;
             TryRedraw();
         }
 
-        private void sliderRootCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _rootCount = (int)sliderRootCount.Value;
-            TryRedraw();
-        }
+        
 
-        private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _penWidth = (int)sliderPenWidth.Value;
-            TryRedraw();
-        }
+        
 
         private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
         {
@@ -260,10 +279,82 @@ namespace Fractal
                 {
                     _autosaveDirectory = fbd.SelectedPath + "\\";
                     sliderDeviation.Value = 0;
-                    _autosave = (bool)checkboxAutosave.IsChecked;
+                    _animateAndSave = (bool)checkboxAutosave.IsChecked;
+                    
                     TryRedraw();
                 }
+                else
+                {
+                    checkboxAutosave.IsChecked = false;
+                }
             }
+        }
+
+        private void checkboxAnimate_Click(object sender, RoutedEventArgs e)
+        {
+            _animate = (bool)checkboxAnimate.IsChecked;
+            checkboxAutosave.IsChecked = false;
+            TryRedraw();
+        }
+
+        private void btForeground_Click(object sender, RoutedEventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            if(cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //recolor the button
+                Color _oppositeColor = GetOppositeColor(cd.Color);
+                System.Windows.Media.Color _mediaColor = System.Windows.Media.Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B);
+                System.Windows.Media.Color _mediaColorOpposite = System.Windows.Media.Color.FromArgb(_oppositeColor.A, _oppositeColor.R, _oppositeColor.G, _oppositeColor.B);
+                btForeground.Background = new System.Windows.Media.SolidColorBrush(_mediaColor);
+                btForeground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
+
+                //adjust global settings as per the user's wishes and redraw main surface with new settings
+                _penForeground = new Pen(Color.FromArgb(_penOpacity, cd.Color), _penWidth);
+                TryRedraw();
+            }
+            
+        }
+
+        private void btBackground_Click(object sender, RoutedEventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            if(cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //recolor the button
+                Color _oppositeColor = GetOppositeColor(cd.Color);
+                System.Windows.Media.Color _mediaColor = System.Windows.Media.Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B);                
+                System.Windows.Media.Color _mediaColorOpposite = System.Windows.Media.Color.FromArgb(_oppositeColor.A, _oppositeColor.R, _oppositeColor.G, _oppositeColor.B);
+                btBackground.Background = new System.Windows.Media.SolidColorBrush(_mediaColor);
+                btBackground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
+
+                //adjust global settings as per the user's wishes and redraw main surface with new settings
+                _brushBackground = new SolidBrush(cd.Color);
+                TryRedraw();
+            }
+        }
+
+        private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _penWidth = (int)sliderPenWidth.Value;
+            _penForeground = new Pen(Color.FromArgb(_penOpacity, _penForeground.Color), _penWidth);
+            TryRedraw();
+        }
+
+        private void sliderPenOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _penOpacity = (int)sliderPenOpacity.Value;
+            _penForeground = new Pen(Color.FromArgb( _penOpacity,_penForeground.Color), _penWidth);
+            TryRedraw();
+        }
+
+        private Color GetOppositeColor(Color original)
+        {
+            int r = 255 - original.R;
+            int g = 255 - original.G;
+            int b = 255 - original.B;
+
+            return Color.FromArgb(r, g, b);
         }
     }
     #endregion

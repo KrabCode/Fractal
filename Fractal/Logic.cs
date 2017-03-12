@@ -12,69 +12,78 @@ namespace Fractal
         public delegate EventHandler RedrawEvent(object sender, RedrawEventArgs e);
         public event RedrawEvent RedrawImage;
         private Bitmap _offscreen;
-
         private bool busy;
-        
-        
-        public void Start(int width, int height, double childDeviation, int detail, int childCount, int penOpacity, int penWidth, int size, double piOffset, int rootCount)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageWidth">Bitmap X resolution</param>
+        /// <param name="imageHeight">Bitmap Y resolution</param>
+        /// <param name="childDeviation">angle difference between first and last child?</param>
+        /// <param name="maxGenerations">Desired number of branch generations</param>
+        /// <param name="childCount">Desired number of children per generation</param>
+        /// <param name="penForeground">Pen to draw the tree with</param>
+        /// <param name="brushBackground">Brush to draw the background with</param>
+        /// <param name="zoomLevel"></param>
+        /// <param name="piOffset"></param>
+        /// <param name="rootCount"></param>
+        public void DrawTree(int imageWidth, int imageHeight, double childDeviation, int maxGenerations, int childCount, Pen penForeground, Brush brushBackground, int zoomLevel, double piOffset, int rootCount)
         {
             if (!busy)
             {
-
-                int levelOfDetail = 0;
-                int maxLevelOfDetail = detail;
-
                 busy = true;
-                _offscreen = new Bitmap(width, height);
+                // Queen - Don't Stop Me Now
+                // https://www.youtube.com/watch?v=HgzGwKwLmgM
+                               
+                //Initialize image, graphics to draw with, draw background                                
+                _offscreen = new Bitmap(imageWidth, imageHeight);
                 Graphics g = Graphics.FromImage(_offscreen);
-                List<Branch> branchesToPopulate = new List<Branch>();
+                g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight);
 
-
-                Pen foregroundPen = new Pen(new SolidBrush(Color.FromArgb(penOpacity, Color.Black)),penWidth);
-                SolidBrush backgroundBrush = new SolidBrush(Color.White);
-                g.FillRectangle(backgroundBrush, 0, 0, width, height);
-
+                //Initialize main list
+                List<Branch> branches = new List<Branch>();                
+                
+                //Build the roots
                 int angleStep = 360 / rootCount;
-                Point center = new Point(width / 2, height / 2 + size);
+                Point center = new Point(imageWidth / 2, imageHeight / 2);
                 for (int i = 0; i < rootCount; i++ )
                 {
-
-                    Branch root = new Branch(center, AngleMath.GetPointOnEdgeOfCircle(center.X, center.Y, size, (double)i*angleStep - 90, piOffset), foregroundPen, childDeviation, childCount, piOffset);
-                    root.Populate();
-                    g.DrawLine(foregroundPen, root.Origin, root.End);
-
-                    foreach (Branch child in root.Children)
-                    {
-                        branchesToPopulate.Add(child);
-                    }
+                    Branch root = new Branch(center, AngleMath.GetPointOnEdgeOfCircle(center.X, center.Y, zoomLevel, (double)i*angleStep - 90, piOffset), penForeground);                    
+                    branches.Add(root);                    
                 }
 
-                
-                while (levelOfDetail < maxLevelOfDetail)
+                //Build the tree
+                int generation = 0;                
+                while (generation < maxGenerations)
                 {
-                    int branchesToPopulateCount = branchesToPopulate.Count;
-                    for (int i = 0; i < branchesToPopulateCount; i++)
+                    //remember the branch count now, because you'll be adding new elements during the cycle 
+                    //their new index will however be higher than this number
+                    int branchCount = branches.Count;
+
+                    for (int i = 0; i < branchCount; i++)
                     {
-                        if (branchesToPopulate[i].Children.Count == 0)
+                        //if tree branch has no kids yet
+                        if (branches[i].Children.Count == 0)
                         {
-                            branchesToPopulate[i].Populate();
-                            foreach (Branch babyBranch in branchesToPopulate[i].Children)
+                            //make some kids
+                            branches[i].Populate(childCount, childDeviation, piOffset);
+                            foreach (Branch babyBranch in branches[i].Children)
                             {
-                                branchesToPopulate.Add(babyBranch);
+                                branches.Add(babyBranch);
                             }
                         }
                     }
-                    levelOfDetail++;
+                    generation++;
                 }
 
-                foreach (Branch b in branchesToPopulate)
+                //Draw the tree - probably could be done more efficiently
+                foreach (Branch b in branches)
                 {
                     g.DrawLine(b.Pen, b.Origin, b.End);
                 }
-
-                levelOfDetail = 0;
-                busy = false;
-
+                
+                g.Dispose();
+                busy = false;               
                 RedrawImage(this, new RedrawEventArgs(_offscreen));
                 
             }            

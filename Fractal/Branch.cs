@@ -15,38 +15,33 @@ namespace Fractal
         public List<Branch> Children { get; set; }
         public double Angle { get; set; }
 
-
-
-        private double _piOffset { get; set; }
-        private double _childDeviation { get; set; }
-        private int _childCount { get; set; }
-        private double _length { get; set; }
-
-        public Branch(PointF origin, PointF end, Pen pen, double childDeviation, int childCount, double piOffset)
+        public Branch(PointF origin, PointF end, Pen pen)
         {
             Origin = origin;
             End = end;
             Pen = pen;
             Angle = AngleMath.GetAngleInDegrees(Origin, End);
             Children = new List<Branch>();
-
-            _piOffset = piOffset;
-            _childDeviation = childDeviation;            
-            _length = AngleMath.GetDistance(Origin, End);
-            _childCount = childCount;
         }
 
-        public void Populate()
+        public void Populate(int childCount, double childDeviation, double piOffset)
         {
-            double minAngle = Angle - _childDeviation;
-            double childAngleStep = _childDeviation * 2 / _childCount;
+            double minAngle = Angle - childDeviation;
+            double childAngleStep = childDeviation * 2 / childCount;
 
-            while (Children.Count <= _childCount)
+            while (Children.Count <= childCount)
             {
                 double childEndAngle = minAngle + (childAngleStep * Children.Count);
-                PointF childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X, End.Y, _length, childEndAngle, _piOffset);
+                PointF childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X,
+                    End.Y,
+                    AngleMath.GetDistance(Origin, End),
+                    childEndAngle,
+                    piOffset
+                    );
                 
-                Branch child = new Branch(End, childEndPoint, Pen, _childDeviation, _childCount, _piOffset);
+                Branch child = new Branch(End,
+                    childEndPoint,
+                    Pen);
                 Children.Add(child);
             }
         }

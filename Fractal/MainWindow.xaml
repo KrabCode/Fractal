@@ -5,46 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fractal"
         mc:Ignorable="d"
-        Title="Fractal" Height="537.052" Width="511.972">
+        Title="Fractal" Height="649.885" Width="700.472">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="4*"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
-        <Image x:Name="imageMainView" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" />
-        <GridSplitter ResizeDirection="Rows"  Grid.Row="1" Height="10" HorizontalAlignment="Stretch" Margin="504,0,0,0"/>
+        <Image x:Name="imageMainView" Grid.Column="0" Grid.Row="0" />
+        <GridSplitter ResizeDirection="Rows"  Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <Grid Grid.Row="2" MaxHeight="130" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="82*"/>
-                <ColumnDefinition Width="242*"/>
-                <ColumnDefinition Width="71*"/>
-                <ColumnDefinition Width="109*"/>
+                <ColumnDefinition />
+                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="Deviation:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="63"  />
-            <Label Content="Branch length:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="-3,0,0,0" Width="85"  />
-            <Label Content="Branch count:" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Width="82"   />
-            <Label Content="Pen opacity:" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="74" Grid.ColumnSpan="2"  />
-            <Label Content="Size:" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="34"   />
-            <Label Content="Pi offset:" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"  />
-            <Label Content="Root count:" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right"  />
-            <Label Content="Pen width:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"  />
-            <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="1" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
-            <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="15" Value="3"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
-            <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="1" Minimum="1" Maximum="15" Value="5"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
-            <Slider x:Name="sliderPenOpacity" Grid.Row="1" Grid.Column="3" Minimum="1" Maximum="255" Value="50"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"  />
-            <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="3" Minimum="1" Maximum="1000" Value="50"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
-            <Slider x:Name="sliderPiOffset" Grid.Row="3" Grid.Column="3" Minimum="-10" Maximum="10" Value="0" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPiOffset_ValueChanged"/>
-            <Slider x:Name="sliderRootCount" Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderRootCount_ValueChanged"/>
-            <Slider x:Name="sliderPenWidth" Grid.Row="2" Grid.Column="3" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenWidth_ValueChanged"/>
+            <Label Content="Deviation:" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="63" FontWeight="Bold"  />
+            <Label Content="Branch length:" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"  />
+            <Label Content="Branch count:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"    />
+            <Label Content="Size:" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"    />
+            <Label Content="Pi offset:" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right"   />
+            <Label Content="Root count:" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Right"  />
+            <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="3" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
+            <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="3" Minimum="1" Maximum="10" Value="3"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
+            <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="3" Minimum="1" Maximum="15" Value="5"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
+            <Slider x:Name="sliderSize" Grid.Row="0" Grid.Column="5" Minimum="1" Maximum="10000" Value="100"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderSize_ValueChanged"  />
+            <Slider x:Name="sliderPiOffset" Grid.Row="2" Grid.Column="5" Minimum="-10" Maximum="10" Value="0" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPiOffset_ValueChanged"/>
+            <Slider x:Name="sliderRootCount" Grid.Row="1" Grid.Column="5" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderRootCount_ValueChanged"/>
+            <Slider x:Name="sliderPenWidth" Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="10" Value="1" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenWidth_ValueChanged"/>
+            <Slider x:Name="sliderPenOpacity" Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="255" Value="80" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderPenOpacity_ValueChanged"/>
+            <Label Content="Pen width:" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" />
+            <Label Content="Pen opacity:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" />
         </Grid>
-        <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
-        <CheckBox x:Name="checkboxAutosave" Content="Save all deviations" HorizontalAlignment="Left" VerticalAlignment="Bottom" OpacityMask="#7F000000" Click="checkboxAutosave_Click"/>
+        <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" />
+        <Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="121" OpacityMask="#7F000000" Background="#4CAEADAD" >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button x:Name="btForeground" Content="Foreground" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btForeground_Click" Background="Black" Foreground="White" />
+            <Button x:Name="btBackground" Content="Background" Grid.Row="0"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btBackground_Click" Background="White" Foreground="Black" />
+            <CheckBox x:Name="checkboxAnimate" Content="Show all deviations" HorizontalAlignment="Left" VerticalAlignment="Top" Click="checkboxAnimate_Click"  Grid.Row="2"/>
+            <CheckBox x:Name="checkboxAutosave" Content="Save all deviations" HorizontalAlignment="Left" VerticalAlignment="Top"  Click="checkboxAutosave_Click" Grid.Row="3"/>
+        </Grid>
     </Grid>
 </Window>
