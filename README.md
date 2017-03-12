@@ -8,7 +8,9 @@ Example results:
 
 Install:
 - Download the following:
-- https://github.com/KrabCode/Fractal/raw/master/Fractal/bin/Release/Fractal.exe
+  - https://github.com/KrabCode/Fractal/raw/master/Fractal/bin/Release/Fractal.exe
 - Run Fractal.exe
-- Windows may freak out. Just click on 'more info' and let it through.
+- Windows Smart Screen may complain. Just click on 'more info' and let it through.
+- If it can't start at all and the error says "CLR", download and install .NET 4.6:
+  - https://www.microsoft.com/en-us/download/details.aspx?id=53344
 - If you put the app under a lot of stress, it will stop responding. Be prepared to ALT+SHIFT+ESC your way out.
