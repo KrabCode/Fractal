@@ -76,7 +76,7 @@ namespace Fractal
         /// <returns></returns>
         private EventHandler _logic_Redraw(object sender, RedrawEventArgs e)
         {
-                            
+                 
             displayedBitmap = new Bitmap(e.imageToDraw);
 
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -378,8 +378,12 @@ namespace Fractal
                 try
                 {
                     int resolutionX = Convert.ToInt32(tbResolutionX.Text);
-                    _resolutionX = resolutionX;
-                    DrawTree();
+                    if(resolutionX > 50)
+                    {
+                        _resolutionX = resolutionX;
+                        DrawTree();
+                    }
+                   
                 }
                 catch (Exception ex)
                 {
@@ -395,8 +399,11 @@ namespace Fractal
                 try
                 {
                     int resolutionY = Convert.ToInt32(tbResolutionY.Text);
-                    _resolutionY = resolutionY;
-                    DrawTree();
+                    if(resolutionY > 50)
+                    {
+                        _resolutionY = resolutionY;
+                        DrawTree();
+                    }
                 }
                 catch (Exception ex)
                 {
