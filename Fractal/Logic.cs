@@ -35,8 +35,9 @@ namespace Fractal
                 // Queen - Don't Stop Me Now
                 // https://www.youtube.com/watch?v=HgzGwKwLmgM
                                
-                //Initialize image, graphics to draw with, draw background                                
-                _offscreen = new Bitmap(imageWidth, imageHeight);
+                //Initialize image, graphics to draw with, draw background      
+                
+                _offscreen = new Bitmap(imageWidth, imageHeight);                
                 Graphics g = Graphics.FromImage(_offscreen);
                 g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight);
 

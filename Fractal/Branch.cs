@@ -13,20 +13,18 @@ namespace Fractal
         public PointF End { get; set; }
         public Pen Pen { get; set; }
         public List<Branch> Children { get; set; }
-        public double Angle { get; set; }
 
         public Branch(PointF origin, PointF end, Pen pen)
         {
             Origin = origin;
             End = end;
             Pen = pen;
-            Angle = AngleMath.GetAngleInDegrees(Origin, End);
             Children = new List<Branch>();
         }
 
         public void Populate(int childCount, double childDeviation, double piOffset)
         {
-            double minAngle = Angle - childDeviation;
+            double minAngle = AngleMath.GetAngleInDegrees(Origin, End) - childDeviation;
             double childAngleStep = childDeviation * 2 / childCount;
 
             while (Children.Count <= childCount)
@@ -42,6 +40,7 @@ namespace Fractal
                 Branch child = new Branch(End,
                     childEndPoint,
                     Pen);
+
                 Children.Add(child);
             }
         }

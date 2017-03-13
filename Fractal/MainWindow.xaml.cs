@@ -27,6 +27,8 @@ namespace Fractal
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Global variables
+
         private Logic _logic;
         private Bitmap displayedBitmap;
         private Random _random = new Random();
@@ -34,7 +36,7 @@ namespace Fractal
         private bool _animatingForwards;
         private bool _animateAndSave = false;        
         private int _autosavedPicsAlready = 0;
-        string _autosaveDirectory = "C:\\Branch generator\\";
+        private string _autosaveDirectory = "";
         private double _deviationChangeBetweenFrames = 1;
 
         private double _deviation = 0;
@@ -49,7 +51,8 @@ namespace Fractal
         private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
         private Brush _brushBackground = new SolidBrush(Color.White);
         private int _rootCount = 1;
-        
+
+#endregion
 
         public MainWindow()
         {
@@ -264,10 +267,50 @@ namespace Fractal
             TryRedraw();
         }
 
-        
+        #endregion
 
-        
+        #region Color selection wiring
 
+        private void btForeground_Click(object sender, RoutedEventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            if (cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //recolor the button
+                Color _oppositeColor = GetOppositeColor(cd.Color);
+                System.Windows.Media.Color _mediaColor = System.Windows.Media.Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B);
+                System.Windows.Media.Color _mediaColorOpposite = System.Windows.Media.Color.FromArgb(_oppositeColor.A, _oppositeColor.R, _oppositeColor.G, _oppositeColor.B);
+                btForeground.Background = new System.Windows.Media.SolidColorBrush(_mediaColor);
+                btForeground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
+
+                //adjust global settings as per the user's wishes and redraw main surface with new settings
+                _penForeground = new Pen(Color.FromArgb(_penOpacity, cd.Color), _penWidth);
+                TryRedraw();
+            }
+
+        }
+
+        private void btBackground_Click(object sender, RoutedEventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            if (cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //recolor the button
+                Color _oppositeColor = GetOppositeColor(cd.Color);
+                System.Windows.Media.Color _mediaColor = System.Windows.Media.Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B);
+                System.Windows.Media.Color _mediaColorOpposite = System.Windows.Media.Color.FromArgb(_oppositeColor.A, _oppositeColor.R, _oppositeColor.G, _oppositeColor.B);
+                btBackground.Background = new System.Windows.Media.SolidColorBrush(_mediaColor);
+                btBackground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
+
+                //adjust global settings as per the user's wishes and redraw main surface with new settings
+                _brushBackground = new SolidBrush(cd.Color);
+                TryRedraw();
+            }
+        }
+
+        #endregion
+
+        #region Animation and autosave checkbox wiring
         private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
@@ -297,42 +340,7 @@ namespace Fractal
             TryRedraw();
         }
 
-        private void btForeground_Click(object sender, RoutedEventArgs e)
-        {
-            ColorDialog cd = new ColorDialog();
-            if(cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                //recolor the button
-                Color _oppositeColor = GetOppositeColor(cd.Color);
-                System.Windows.Media.Color _mediaColor = System.Windows.Media.Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B);
-                System.Windows.Media.Color _mediaColorOpposite = System.Windows.Media.Color.FromArgb(_oppositeColor.A, _oppositeColor.R, _oppositeColor.G, _oppositeColor.B);
-                btForeground.Background = new System.Windows.Media.SolidColorBrush(_mediaColor);
-                btForeground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
-
-                //adjust global settings as per the user's wishes and redraw main surface with new settings
-                _penForeground = new Pen(Color.FromArgb(_penOpacity, cd.Color), _penWidth);
-                TryRedraw();
-            }
-            
-        }
-
-        private void btBackground_Click(object sender, RoutedEventArgs e)
-        {
-            ColorDialog cd = new ColorDialog();
-            if(cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                //recolor the button
-                Color _oppositeColor = GetOppositeColor(cd.Color);
-                System.Windows.Media.Color _mediaColor = System.Windows.Media.Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B);                
-                System.Windows.Media.Color _mediaColorOpposite = System.Windows.Media.Color.FromArgb(_oppositeColor.A, _oppositeColor.R, _oppositeColor.G, _oppositeColor.B);
-                btBackground.Background = new System.Windows.Media.SolidColorBrush(_mediaColor);
-                btBackground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
-
-                //adjust global settings as per the user's wishes and redraw main surface with new settings
-                _brushBackground = new SolidBrush(cd.Color);
-                TryRedraw();
-            }
-        }
+        
 
         private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -356,6 +364,34 @@ namespace Fractal
 
             return Color.FromArgb(r, g, b);
         }
+
+        private void tbResolutionX_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                int resolutionX = Convert.ToInt32(tbResolutionX.Text);
+                _resolutionX = resolutionX;
+                TryRedraw();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);                
+            }           
+        }
+
+        private void tbResolutionY_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                int resolutionY = Convert.ToInt32(tbResolutionY.Text);
+                _resolutionY = resolutionY;
+                TryRedraw();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
     }
-    #endregion
+#endregion
 }
