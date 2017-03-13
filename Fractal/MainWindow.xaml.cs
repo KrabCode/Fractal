@@ -52,7 +52,7 @@ namespace Fractal
         private Brush _brushBackground = new SolidBrush(Color.White);
         private int _rootCount = 1;
 
-#endregion
+        #endregion
 
         public MainWindow()
         {
@@ -65,9 +65,15 @@ namespace Fractal
             _logic = new Logic();
             _logic.RedrawImage += _logic_Redraw;
 
-            TryRedraw();
+            DrawTree();
         }
 
+        /// <summary>
+        /// Fires when _logic finishes DrawTree(), the resulting image is passed using RedrawEventArgs.
+        /// </summary>
+        /// <param name="sender">Only a Logic instance sends this</param>
+        /// <param name="e">e.image should contain the resulting image to draw onto the main drawing surface</param>
+        /// <returns></returns>
         private EventHandler _logic_Redraw(object sender, RedrawEventArgs e)
         {
                             
@@ -117,7 +123,7 @@ namespace Fractal
                                 _animatingForwards = true;                                
                             }
                         }
-                        TryRedraw();
+                        DrawTree();
                     }
                     imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
                 }));
@@ -125,7 +131,7 @@ namespace Fractal
             return null;
         }
 
-        private void TryRedraw()
+        private void DrawTree()
         {
             Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount); });
         }
@@ -234,37 +240,37 @@ namespace Fractal
         private void sliderDeviation_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _deviation = Math.Round(sliderDeviation.Value,0);
-            TryRedraw();
+            DrawTree();
         }
 
         private void sliderSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _size = (int)sliderSize.Value;
-            TryRedraw();
+            DrawTree();
         }
 
         private void sliderDetail_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _detail = (int)sliderDetail.Value;
-            TryRedraw();
+            DrawTree();
         }
         
         private void sliderRootCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _rootCount = (int)sliderRootCount.Value;
-            TryRedraw();
+            DrawTree();
         }
 
         private void sliderChildCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _childCount = (int)sliderChildCount.Value;
-            TryRedraw();
+            DrawTree();
         }
         
         private void sliderPiOffset_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _piOffset = sliderPiOffset.Value;
-            TryRedraw();
+            DrawTree();
         }
 
         #endregion
@@ -285,7 +291,7 @@ namespace Fractal
 
                 //adjust global settings as per the user's wishes and redraw main surface with new settings
                 _penForeground = new Pen(Color.FromArgb(_penOpacity, cd.Color), _penWidth);
-                TryRedraw();
+                DrawTree();
             }
 
         }
@@ -304,7 +310,7 @@ namespace Fractal
 
                 //adjust global settings as per the user's wishes and redraw main surface with new settings
                 _brushBackground = new SolidBrush(cd.Color);
-                TryRedraw();
+                DrawTree();
             }
         }
 
@@ -324,7 +330,7 @@ namespace Fractal
                     sliderDeviation.Value = 0;
                     _animateAndSave = (bool)checkboxAutosave.IsChecked;
                     
-                    TryRedraw();
+                    DrawTree();
                 }
                 else
                 {
@@ -337,23 +343,21 @@ namespace Fractal
         {
             _animate = (bool)checkboxAnimate.IsChecked;
             checkboxAutosave.IsChecked = false;
-            TryRedraw();
+            DrawTree();
         }
-
-        
 
         private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _penWidth = (int)sliderPenWidth.Value;
             _penForeground = new Pen(Color.FromArgb(_penOpacity, _penForeground.Color), _penWidth);
-            TryRedraw();
+            DrawTree();
         }
 
         private void sliderPenOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _penOpacity = (int)sliderPenOpacity.Value;
             _penForeground = new Pen(Color.FromArgb( _penOpacity,_penForeground.Color), _penWidth);
-            TryRedraw();
+            DrawTree();
         }
 
         private Color GetOppositeColor(Color original)
@@ -364,34 +368,45 @@ namespace Fractal
 
             return Color.FromArgb(r, g, b);
         }
+        #endregion
 
+        #region Resolution wiring
         private void tbResolutionX_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
+            if (tbResolutionX.Text != "")
             {
-                int resolutionX = Convert.ToInt32(tbResolutionX.Text);
-                _resolutionX = resolutionX;
-                TryRedraw();
+                try
+                {
+                    int resolutionX = Convert.ToInt32(tbResolutionX.Text);
+                    _resolutionX = resolutionX;
+                    DrawTree();
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message);                
-            }           
         }
 
         private void tbResolutionY_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
+            if (tbResolutionY.Text != "")
             {
-                int resolutionY = Convert.ToInt32(tbResolutionY.Text);
-                _resolutionY = resolutionY;
-                TryRedraw();
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message);
+                try
+                {
+                    int resolutionY = Convert.ToInt32(tbResolutionY.Text);
+                    _resolutionY = resolutionY;
+                    DrawTree();
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
             }
         }
+        #endregion
+
+        
+
     }
-#endregion
 }

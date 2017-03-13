@@ -22,18 +22,18 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition/>
+                <ColumnDefinition />                
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="Deviation:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="63" FontWeight="Bold"  />
+            <Label Content="Deviation:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" FontWeight="Bold"  />
             <Label Content="Generations:" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"  />
-            <Label Content="Branch count:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"    />
-            <Label Content="Size:" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"    />
+            <Label Content="Branches:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"    />
+            <Label Content="Zoom:" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"    />
             <Label Content="Pi offset:" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right"   />
-            <Label Content="Root count:" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Right"  />
+            <Label Content="Roots:" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Right"  />
             <Slider x:Name="sliderDeviation" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Maximum="361" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDeviation_ValueChanged"  />
             <Slider x:Name="sliderDetail" Grid.Row="1" Grid.Column="3" Minimum="1" Maximum="10" Value="3"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderDetail_ValueChanged" />
             <Slider x:Name="sliderChildCount" Grid.Row="2" Grid.Column="3" Minimum="1" Maximum="15" Value="5"  TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="sliderChildCount_ValueChanged"  />
@@ -46,7 +46,7 @@
             <Label Content="Pen opacity:" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" />
         </Grid>
         <Button x:Name="btSave" Content="Save..." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" />
-        <Grid  HorizontalAlignment="Left" VerticalAlignment="Bottom" OpacityMask="#7F000000" Background="#4CAEADAD" >
+        <Grid x:Name="gridAuxiliarySettings" HorizontalAlignment="Left" VerticalAlignment="Bottom" OpacityMask="#7F000000" Background="#4CAEADAD" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -58,11 +58,11 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Button x:Name="btBackground" Content="Background" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btBackground_Click" Background="White" Foreground="Black" Grid.ColumnSpan="2" />
-            <Button x:Name="btForeground" Content="Foreground" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btForeground_Click" Background="Black" Foreground="White" Grid.ColumnSpan="2" />
-            <TextBox x:Name="tbResolutionX" Grid.Row="2" Grid.Column="0" Text="1920" HorizontalAlignment="Right" Margin="0,0,5,0" TextChanged="tbResolutionX_TextChanged" />
-            <TextBox x:Name="tbResolutionY" Grid.Row="2" Grid.Column="1" Text="1080" HorizontalAlignment="Left" Margin="5,0,0,0" TextChanged="tbResolutionY_TextChanged" />
-            <TextBlock Text="x" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+            <Button x:Name="btBackground" Content="Background" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btBackground_Click" Background="White" Foreground="Black" Grid.ColumnSpan="2" />
+            <Button x:Name="btForeground" Content="Foreground" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btForeground_Click" Background="Black" Foreground="White" Grid.ColumnSpan="2" />
+            <TextBox x:Name="tbResolutionX" Grid.Row="0" Grid.Column="0" Text="1920" HorizontalAlignment="Right" Margin="0,0,5,0" TextChanged="tbResolutionX_TextChanged" />
+            <TextBox x:Name="tbResolutionY" Grid.Row="0" Grid.Column="1" Text="1080" HorizontalAlignment="Left" Margin="5,0,0,0" TextChanged="tbResolutionY_TextChanged" />
+            <TextBlock Text="x" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
             <CheckBox x:Name="checkboxAnimate" Content="Show all deviations" HorizontalAlignment="Left" VerticalAlignment="Top" Click="checkboxAnimate_Click"  Grid.Row="3" Grid.ColumnSpan="2"/>
             <CheckBox x:Name="checkboxAutosave" Content="Save all deviations" HorizontalAlignment="Left" VerticalAlignment="Top"  Click="checkboxAutosave_Click" Grid.Row="4" Grid.ColumnSpan="2"/>
 

@@ -13,6 +13,10 @@ namespace Fractal
         public event RedrawEvent RedrawImage;
         private Bitmap _offscreen;
         private bool busy;
+        private Logic _this;
+        public Logic()
+        {
+        }
 
         /// <summary>
         /// 
