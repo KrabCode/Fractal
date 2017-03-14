@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace Fractal
 {
+    
     public class Logic
     {
         public delegate EventHandler RedrawEvent(object sender, RedrawEventArgs e);
         public event RedrawEvent RedrawImage;
         private Bitmap _offscreen;
         private bool busy;
-
         /// <summary>
         /// Draws a psychedelic tree and updates the MainWindow by invoking RedrawImage and passing the resulting bitmap in RedrawEventArgs e.
         /// </summary>
@@ -27,7 +29,18 @@ namespace Fractal
         /// <param name="zoomLevel">Length of the root line - inherited by every branch</param>
         /// <param name="piOffset">AngleMath uses π + piOffset in place of π for finding the endpoint of a branch</param>
         /// <param name="rootCount">Number of stems - effectively multiplying the number of branches</param>
-        public void DrawTree(int imageWidth, int imageHeight, double childDeviation, int maxGenerations, int childCount, Pen penForeground, Brush brushBackground, int zoomLevel, double piOffset, int rootCount)
+        public void DrawTree(int imageWidth,
+            int imageHeight,
+            double childDeviation,
+            int maxGenerations,
+            int childCount,
+            Pen penForeground,
+            Brush brushBackground,
+            int zoomLevel,
+            double piOffset,
+            int rootCount,
+            LineStyle lineStyle,
+            System.Drawing.Drawing2D.CompositingQuality graphicsQuality)
         {
             if (!busy)
             {
@@ -40,22 +53,26 @@ namespace Fractal
                 _offscreen = new Bitmap(imageWidth, imageHeight);
                 using (Graphics g = Graphics.FromImage(_offscreen))
                 {
+                    
+                    g.CompositingQuality = graphicsQuality;
                     g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight);
 
                     //Initialize main list
-                    List<Branch> branches = new List<Branch>();                
-                
+                    List<Branch> branches = new List<Branch>();
+
                     //Build the roots
                     int angleStep = 360 / rootCount;
-                    Point center = new Point(imageWidth / 2, imageHeight / 2);
-                    for (int i = 0; i < rootCount; i++ )
+                    PointF center = new PointF(imageWidth / 2, imageHeight / 2);
+                    for (int i = 0; i < rootCount; i++)
                     {
-                        Branch root = new Branch(center, AngleMath.GetPointOnEdgeOfCircle(center.X, center.Y, zoomLevel, (double)i*angleStep - 90, piOffset), penForeground);                    
-                        branches.Add(root);                    
+                        Branch root = new Branch(center,
+                            AngleMath.GetPointOnEdgeOfCircle(center.X, center.Y, zoomLevel, (double)i * angleStep - 90, piOffset),
+                            penForeground, center);
+                        branches.Add(root);
                     }
 
                     //Build the tree
-                    int generation = 0;                
+                    int generation = 0;
                     while (generation < maxGenerations)
                     {
                         //remember the branch count now, because you'll be adding new elements during the cycle 
@@ -79,22 +96,105 @@ namespace Fractal
                         generation++;
                     }
 
-
                     //Draw the tree - probably could be done more efficiently
-                    RectangleF imageArea = new RectangleF(0, 0, _offscreen.Width, _offscreen.Height);
-                    foreach (Branch b in branches)
+                    switch (lineStyle)
                     {
-                        //only draw what's going to be displayed
-                        if(imageArea.Contains(b.Origin) || imageArea.Contains(b.End))
-                        {
-                            g.DrawLine(b.Pen, b.Origin, b.End);
-                        }
+                        case LineStyle.Normal:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.DrawLine(b.Pen, b.Origin, b.End);
+                                }
+                                break;
+                            }
+                        case LineStyle.Polygon:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.DrawPolygon(b.Pen,
+                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                        });
+                                }
+                                break;
+                            }                        
+                        case LineStyle.Bezier:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.DrawBezier(b.Pen,
+                                        center,
+                                        b.ParentOrigin,
+                                        b.Origin,
+                                        b.End);
+                                }
+                                break;
+                            }
+                        case LineStyle.Leaf:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.DrawCurve(b.Pen,
+                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                        });
+                                }
+                                break;
+                            }
+                        case LineStyle.ClosedCurve:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.DrawClosedCurve(b.Pen,
+                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                        });
+                                }
+                                break;
+                            }
+                        case LineStyle.FilledPolygon:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.FillPolygon(b.Pen.Brush,
+                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                        });
+                                }
+                                break;
+                            }
+                        case LineStyle.FilledClosedCurve:
+                            {
+                                foreach (Branch b in branches)
+                                {
+                                    g.FillClosedCurve(b.Pen.Brush,
+                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                        });
+                                }
+                                break;
+                            }
+                        case LineStyle.Eighth:
+                            {
+                                
+                                break;
+                            }
+                        case LineStyle.Ninth:
+                            {
+                                break;
+                            }
+                        case LineStyle.Tenth:
+                            {
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
                     }
+
+                    g.Flush();
                 }
-                busy = false;               
+
+                busy = false;
                 RedrawImage(this, new RedrawEventArgs(_offscreen));
                 
-            }            
+            }
         }
     }
 }

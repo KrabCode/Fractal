@@ -13,12 +13,14 @@ namespace Fractal
         public PointF End { get; set; }
         public Pen Pen { get; set; }
         public List<Branch> Children { get; set; }
+        public PointF ParentOrigin { get; set; }
 
-        public Branch(PointF origin, PointF end, Pen pen)
+        public Branch(PointF origin, PointF end, Pen pen, PointF parentOrigin)
         {
             Origin = origin;
             End = end;
             Pen = pen;
+            ParentOrigin = parentOrigin;
             Children = new List<Branch>();
         }
 
@@ -39,7 +41,8 @@ namespace Fractal
                 
                 Branch child = new Branch(End,
                     childEndPoint,
-                    Pen);
+                    Pen, 
+                    this.Origin);
 
                 Children.Add(child);
             }

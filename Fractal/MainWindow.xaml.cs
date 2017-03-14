@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 public enum KnownImageFormat { bmp, png, jpeg, gif };
+public enum LineStyle { Normal, Bezier, Leaf, ClosedCurve, Polygon, FilledPolygon, FilledClosedCurve, Eighth, Ninth, Tenth };
 
 namespace Fractal
 {
@@ -32,12 +33,7 @@ namespace Fractal
         private Logic _logic;
         private Bitmap displayedBitmap;
         private Random _random = new Random();
-        private bool _animate;
-        private bool _animatingForwards;
-        private bool _animateAndSave = false;        
-        private int _autosavedPicsAlready = 0;
-        private string _autosaveDirectory = "";
-        private double _deviationChangeBetweenFrames = 1;
+       
 
         private double _deviation = 0;
         private double _piOffset = 0;
@@ -51,7 +47,14 @@ namespace Fractal
         private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
         private Brush _brushBackground = new SolidBrush(Color.White);
         private int _rootCount = 1;
-
+        private bool _animate = false;
+        private bool _animatingForwards = false;
+        private bool _animateAndSave = false;
+        private int _autosavedPicsAlready = 0;
+        private string _autosaveDirectory = "";
+        private double _deviationChangeBetweenFrames = 1;
+        private LineStyle _lineStyle = LineStyle.Normal;
+        private System.Drawing.Drawing2D.CompositingQuality _graphicsQuality;
         #endregion
 
         public MainWindow()
@@ -133,7 +136,7 @@ namespace Fractal
 
         private void DrawTree()
         {
-            Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount); });
+            Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount, _lineStyle, _graphicsQuality); });
         }
 
         #region Save button wiring
@@ -411,9 +414,72 @@ namespace Fractal
                 }
             }
         }
+
+
         #endregion
 
-        
-
+        private void comboLineStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int itemIndex = comboLineStyle.SelectedIndex;
+            switch (itemIndex)
+            {
+                case 0:
+                    {
+                        _lineStyle = LineStyle.Normal;
+                        break;
+                    }
+                case 1:
+                    {
+                        _lineStyle = LineStyle.Polygon;                        
+                        break;
+                    }
+                case 2:
+                    {
+                        _lineStyle = LineStyle.Bezier;                        
+                        break;
+                    }
+                case 3:
+                    {
+                        _lineStyle = LineStyle.Leaf;                        
+                        break;
+                    }
+                case 4:
+                    {
+                        _lineStyle = LineStyle.ClosedCurve;
+                        break;
+                    }
+                case 5:
+                    {
+                        _lineStyle = LineStyle.FilledPolygon;
+                        break;
+                    }
+                case 6:
+                    {
+                        _lineStyle = LineStyle.FilledClosedCurve;
+                        break;
+                    }
+                case 7:
+                    {
+                        _lineStyle = LineStyle.Eighth;
+                        break;
+                    }
+                case 8:
+                    {
+                        _lineStyle = LineStyle.Ninth;
+                        break;
+                    }
+                case 9:
+                    {
+                        _lineStyle = LineStyle.Tenth;
+                        break;
+                    }
+                default:
+                    {
+                        _lineStyle = LineStyle.Normal;
+                        break;
+                    }                
+            }
+            DrawTree();
+        }
     }
 }
