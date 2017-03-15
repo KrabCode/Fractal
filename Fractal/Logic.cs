@@ -40,7 +40,8 @@ namespace Fractal
             double piOffset,
             int rootCount,
             LineStyle lineStyle,
-            System.Drawing.Drawing2D.CompositingQuality graphicsQuality)
+            System.Drawing.Drawing2D.CompositingQuality graphicsQuality,
+            double relativeChildLength)
         {
             if (!busy)
             {
@@ -85,7 +86,7 @@ namespace Fractal
                             if (branches[i].Children.Count == 0)
                             {
                                 //make some kids
-                                branches[i].Populate(childCount, childDeviation, piOffset);
+                                branches[i].Populate(childCount, childDeviation, piOffset, relativeChildLength);
                                 foreach (Branch babyBranch in branches[i].Children)
                                 {
                                     //add them to the main list
@@ -96,7 +97,7 @@ namespace Fractal
                         generation++;
                     }
 
-                    //Draw the tree - probably could be done more efficiently
+                    //Draw the tree according to selected line style - probably could be done more efficiently
                     switch (lineStyle)
                     {
                         case LineStyle.Normal:
@@ -125,7 +126,8 @@ namespace Fractal
                                         center,
                                         b.ParentOrigin,
                                         b.Origin,
-                                        b.End);
+                                        b.End
+                                        );
                                 }
                                 break;
                             }
@@ -134,7 +136,7 @@ namespace Fractal
                                 foreach (Branch b in branches)
                                 {
                                     g.DrawCurve(b.Pen,
-                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                        new PointF[] { b.End,  b.Origin, b.ParentOrigin
                                         });
                                 }
                                 break;

@@ -31,6 +31,7 @@ namespace Fractal
         {
             return angle * (180.0 / Math.PI);
         }
+
         public static double GetDistance(PointF a, PointF b)
         {
             //Right angled triangle ABC, return the hypotenuse

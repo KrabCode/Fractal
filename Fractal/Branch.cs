@@ -24,7 +24,7 @@ namespace Fractal
             Children = new List<Branch>();
         }
 
-        public void Populate(int targetPopulation, double childDeviation, double piOffset)
+        public void Populate(int targetPopulation, double childDeviation, double piOffset, double relativeChildLength)
         {
             //There's n children, growing from the End of this branch, each deviating from the parent in an angle between -childDeviation and childDeviation
             double angleThisBranch = AngleMath.GetAngleInDegrees(Origin, End);      //What's the absolute orientation of this branch?            
@@ -38,7 +38,7 @@ namespace Fractal
                 //Find the End of the child using the newfound childAngle
                 PointF childEnd = AngleMath.GetPointOnEdgeOfCircle(End.X,
                     End.Y,
-                    AngleMath.GetDistance(Origin, End),
+                    AngleMath.GetDistance(Origin, End) * relativeChildLength,
                     childAngle,
                     piOffset
                     );

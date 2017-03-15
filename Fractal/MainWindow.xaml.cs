@@ -54,7 +54,8 @@ namespace Fractal
         private string _autosaveDirectory = "";
         private double _deviationChangeBetweenFrames = 1;
         private LineStyle _lineStyle = LineStyle.Normal;
-        private System.Drawing.Drawing2D.CompositingQuality _graphicsQuality;
+        private System.Drawing.Drawing2D.CompositingQuality _graphicsQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+        private double _relativeChildLength = 1;
         #endregion
 
         public MainWindow()
@@ -136,7 +137,7 @@ namespace Fractal
 
         private void DrawTree()
         {
-            Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount, _lineStyle, _graphicsQuality); });
+            Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount, _lineStyle, _graphicsQuality, _relativeChildLength); });
         }
 
         #region Save button wiring
@@ -479,6 +480,12 @@ namespace Fractal
                         break;
                     }                
             }
+            DrawTree();
+        }
+
+        private void sliderRelativeChildLength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _relativeChildLength = sliderRelativeChildLength.Value;
             DrawTree();
         }
     }
