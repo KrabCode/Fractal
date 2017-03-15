@@ -24,26 +24,31 @@ namespace Fractal
             Children = new List<Branch>();
         }
 
-        public void Populate(int childCount, double childDeviation, double piOffset)
+        public void Populate(int targetPopulation, double childDeviation, double piOffset)
         {
-            double minAngle = AngleMath.GetAngleInDegrees(Origin, End) - childDeviation;
-            double childAngleStep = childDeviation * 2 / childCount;
+            //There's n children, growing from the End of this branch, each deviating from the parent in an angle between -childDeviation and childDeviation
+            double angleThisBranch = AngleMath.GetAngleInDegrees(Origin, End);      //What's the absolute orientation of this branch?            
+            double angleOfFirstChild = angleThisBranch - childDeviation;                //What's the absolute orientation of the first child at -childDeviation?
+            double angleNeighbourDifference = childDeviation * 2 / targetPopulation;        //What's the angle difference between the first child and the next?
 
-            while (Children.Count <= childCount)
+            while (Children.Count <= targetPopulation) //Until we hit the target population
             {
-                double childEndAngle = minAngle + (childAngleStep * Children.Count);
-                PointF childEndPoint = AngleMath.GetPointOnEdgeOfCircle(End.X,
+                //Find absolute angle for this child
+                double childAngle = angleOfFirstChild + (angleNeighbourDifference * Children.Count);
+                //Find the End of the child using the newfound childAngle
+                PointF childEnd = AngleMath.GetPointOnEdgeOfCircle(End.X,
                     End.Y,
                     AngleMath.GetDistance(Origin, End),
-                    childEndAngle,
+                    childAngle,
                     piOffset
                     );
-                
-                Branch child = new Branch(End,
-                    childEndPoint,
+                //Instantiate the child
+                Branch child = new Branch(End, //The origin of the child is the End of this branch
+                    childEnd, //The End of the child
                     Pen, 
                     this.Origin);
 
+                //Add it to the children collection so that this method may end someday
                 Children.Add(child);
             }
         }

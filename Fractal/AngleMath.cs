@@ -13,7 +13,6 @@ namespace Fractal
         {
             double x = x0 + radius * Math.Cos(angleInDegrees * (Math.PI + piOffset )/ 180);
             double y = y0 + radius * Math.Sin(angleInDegrees * (Math.PI + piOffset )/ 180);
-
             return new PointF((float)x, (float)y);
         }
 
