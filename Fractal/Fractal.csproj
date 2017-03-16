@@ -60,6 +60,7 @@
     <Compile Include="AngleMath.cs" />
     <Compile Include="BitmapConverter.cs" />
     <Compile Include="Branch.cs" />
+    <Compile Include="ColorConverter.cs" />
     <Compile Include="RedrawEventArgs.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

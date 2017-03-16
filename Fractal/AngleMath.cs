@@ -40,5 +40,7 @@ namespace Fractal
             double AC = a.Y - c.Y;
             return Math.Sqrt((AC * AC) + (CB * CB));
         }
+
+
     } 
 }

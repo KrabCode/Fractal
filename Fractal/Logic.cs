@@ -14,7 +14,6 @@ namespace Fractal
     {
         public delegate EventHandler RedrawEvent(object sender, RedrawEventArgs e);
         public event RedrawEvent RedrawImage;
-        private Bitmap _offscreen;
         private bool busy;
         /// <summary>
         /// Draws a psychedelic tree and updates the MainWindow by invoking RedrawImage and passing the resulting bitmap in RedrawEventArgs e.
@@ -31,172 +30,201 @@ namespace Fractal
         /// <param name="rootCount">Number of stems - effectively multiplying the number of branches</param>
         public void DrawTree(int imageWidth,
             int imageHeight,
-            double childDeviation,
             int maxGenerations,
+            int rootCount,
             int childCount,
+            int zoomLevel,            
+            double piOffset,
+            double childDeviation,
+            double childLengthRelativeToParent,
+            double childHueChange,
             Pen penForeground,
             Brush brushBackground,
-            int zoomLevel,
-            double piOffset,
-            int rootCount,
-            LineStyle lineStyle,
-            System.Drawing.Drawing2D.CompositingQuality graphicsQuality,
-            double relativeChildLength)
+            LineStyle lineStyle            
+            )
         {
             if (!busy)
             {
                 busy = true;
                 // Queen - Don't Stop Me Now
                 // https://www.youtube.com/watch?v=HgzGwKwLmgM
-                               
-                //Initialize image, graphics to draw with, draw background      
+
+                PointF center = new PointF(imageWidth / 2, imageHeight / 2);
+                List<Branch> tree = BuildTree(center, maxGenerations, childCount, childDeviation, piOffset, childLengthRelativeToParent, rootCount, zoomLevel, penForeground, childHueChange);
                 
-                _offscreen = new Bitmap(imageWidth, imageHeight);
+                Bitmap _offscreen = new Bitmap(imageWidth, imageHeight);
                 using (Graphics g = Graphics.FromImage(_offscreen))
                 {
-                    
-                    g.CompositingQuality = graphicsQuality;
-                    g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight);
-
-                    //Initialize main list
-                    List<Branch> branches = new List<Branch>();
-
-                    //Build the roots
-                    int angleStep = 360 / rootCount;
-                    PointF center = new PointF(imageWidth / 2, imageHeight / 2);
-                    for (int i = 0; i < rootCount; i++)
-                    {
-                        Branch root = new Branch(center,
-                            AngleMath.GetPointOnEdgeOfCircle(center.X, center.Y, zoomLevel, (double)i * angleStep - 90, piOffset),
-                            penForeground, center);
-                        branches.Add(root);
-                    }
-
-                    //Build the tree
-                    int generation = 0;
-                    while (generation < maxGenerations)
-                    {
-                        //remember the branch count now, because you'll be adding new elements during the cycle 
-                        //their new index will however be higher than the current population
-                        int branchCount = branches.Count;
-
-                        for (int i = 0; i < branchCount; i++) //do not exceed the original population in this generation
-                        {
-                            //if this branch has no kids yet (happens only once per branch)
-                            if (branches[i].Children.Count == 0)
-                            {
-                                //make some kids
-                                branches[i].Populate(childCount, childDeviation, piOffset, relativeChildLength);
-                                foreach (Branch babyBranch in branches[i].Children)
-                                {
-                                    //add them to the main list
-                                    branches.Add(babyBranch);
-                                }
-                            }
-                        }
-                        generation++;
-                    }
-
-                    //Draw the tree according to selected line style - probably could be done more efficiently
-                    switch (lineStyle)
-                    {
-                        case LineStyle.Normal:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.DrawLine(b.Pen, b.Origin, b.End);
-                                }
-                                break;
-                            }
-                        case LineStyle.Polygon:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.DrawPolygon(b.Pen,
-                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
-                                        });
-                                }
-                                break;
-                            }                        
-                        case LineStyle.Bezier:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.DrawBezier(b.Pen,
-                                        center,
-                                        b.ParentOrigin,
-                                        b.Origin,
-                                        b.End
-                                        );
-                                }
-                                break;
-                            }
-                        case LineStyle.Leaf:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.DrawCurve(b.Pen,
-                                        new PointF[] { b.End,  b.Origin, b.ParentOrigin
-                                        });
-                                }
-                                break;
-                            }
-                        case LineStyle.ClosedCurve:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.DrawClosedCurve(b.Pen,
-                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
-                                        });
-                                }
-                                break;
-                            }
-                        case LineStyle.FilledPolygon:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.FillPolygon(b.Pen.Brush,
-                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
-                                        });
-                                }
-                                break;
-                            }
-                        case LineStyle.FilledClosedCurve:
-                            {
-                                foreach (Branch b in branches)
-                                {
-                                    g.FillClosedCurve(b.Pen.Brush,
-                                        new PointF[] { b.ParentOrigin, b.Origin, b.End
-                                        });
-                                }
-                                break;
-                            }
-                        case LineStyle.Eighth:
-                            {
-                                
-                                break;
-                            }
-                        case LineStyle.Ninth:
-                            {
-                                break;
-                            }
-                        case LineStyle.Tenth:
-                            {
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
-                    }
-
+                    g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight); //Fill background with background color                    
+                    DrawTreeToOffscreenBitmap(g, tree, center, lineStyle );          //Draw the tree that we built
                     g.Flush();
                 }
-
                 busy = false;
-                RedrawImage(this, new RedrawEventArgs(_offscreen));
-                
+                RedrawImage(this, new RedrawEventArgs(_offscreen));                 //Render tree on the GUI thread
+            }            
+        }
+
+        List<Branch> BuildTree(PointF center,
+            int maxGenerations,
+            int childCount,
+            double childDeviation,
+            double piOffset,
+            double relativeChildLength,
+            int rootCount, 
+            double zoomLevel, 
+            Pen rootPen, 
+            double childHueChange)
+        {
+            //Initialize tree
+            List<Branch> tree = new List<Branch>();
+
+            //Build the roots
+            int angleStep = 360 / rootCount;
+            for (int i = 0; i < rootCount; i++)
+            {
+                Branch root = new Branch(center,
+                    AngleMath.GetPointOnEdgeOfCircle(center.X,
+                    center.Y, 
+                    zoomLevel,
+                    (double)i * angleStep - 90,
+                    piOffset),
+                    rootPen,
+                    center);
+                tree.Add(root);
+            }
+            //Build the tree
+            int generation = 0;
+            while (generation < maxGenerations)
+            {
+                //remember the branch count now, because you'll be adding new elements during the cycle 
+                //their new index will however be higher than the current population
+                int branchCount = tree.Count;
+
+                for (int i = 0; i < branchCount; i++) //do not exceed the original population in this generation
+                {
+                    //if this branch has no kids yet (happens only once per branch)
+                    if (tree[i].Children.Count == 0)
+                    {
+                        Pen parentPen = tree[i].Pen;
+                        //ajdust the pen for the children if needed
+                        int a = parentPen.Color.A;
+                        float h = parentPen.Color.GetHue() + (float)childHueChange;
+                        float s = parentPen.Color.GetSaturation();
+                        float b = parentPen.Color.GetBrightness();
+                        Color childColor = ColorConverter.FromAhsb(a, h, s, b);
+                        Pen childPen = new Pen(childColor, parentPen.Width );
+                        
+                        //make some kids
+                        tree[i].Populate(childCount, childDeviation, piOffset, relativeChildLength, childPen);
+                        foreach (Branch babyBranch in tree[i].Children)
+                        {
+                            //add them to the main list
+                            tree.Add(babyBranch);
+                        }
+                    }
+                }
+                generation++;
+            }
+            return tree;
+        }
+
+        void DrawTreeToOffscreenBitmap(Graphics g, List<Branch> branches, PointF center, LineStyle lineStyle)
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+            
+            //Draw the tree according to selected line style - probably could be done more efficiently
+            switch (lineStyle)
+            {
+                case LineStyle.Normal:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.DrawLine(b.Pen, b.Origin, b.End);
+                        }
+                        break;
+                    }
+                case LineStyle.Polygon:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.DrawPolygon(b.Pen,
+                                new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                });
+                        }
+                        break;
+                    }
+                case LineStyle.Bezier:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.DrawBezier(b.Pen,
+                                center,
+                                b.ParentOrigin,
+                                b.Origin,
+                                b.End
+                                );
+                        }
+                        break;
+                    }
+                case LineStyle.Leaf:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.DrawCurve(b.Pen,
+                                new PointF[] { b.End,  b.Origin, b.ParentOrigin
+                                });
+                        }
+                        break;
+                    }
+                case LineStyle.ClosedCurve:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.DrawClosedCurve(b.Pen,
+                                new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                });
+                        }
+                        break;
+                    }
+                case LineStyle.FilledPolygon:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.FillPolygon(b.Pen.Brush,
+                                new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                });
+                        }
+                        break;
+                    }
+                case LineStyle.FilledClosedCurve:
+                    {
+                        foreach (Branch b in branches)
+                        {
+                            g.FillClosedCurve(b.Pen.Brush,
+                                new PointF[] { b.ParentOrigin, b.Origin, b.End
+                                });
+                        }
+                        break;
+                    }
+                case LineStyle.Eighth:
+                    {
+
+                        break;
+                    }
+                case LineStyle.Ninth:
+                    {
+                        break;
+                    }
+                case LineStyle.Tenth:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
+
     }
 }

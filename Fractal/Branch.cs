@@ -24,7 +24,7 @@ namespace Fractal
             Children = new List<Branch>();
         }
 
-        public void Populate(int targetPopulation, double childDeviation, double piOffset, double relativeChildLength)
+        public void Populate(int targetPopulation, double childDeviation, double piOffset, double relativeChildLength, Pen childPen)
         {
             //There's n children, growing from the End of this branch, each deviating from the parent in an angle between -childDeviation and childDeviation
             double angleThisBranch = AngleMath.GetAngleInDegrees(Origin, End);      //What's the absolute orientation of this branch?            
@@ -45,12 +45,13 @@ namespace Fractal
                 //Instantiate the child
                 Branch child = new Branch(End, //The origin of the child is the End of this branch
                     childEnd, //The End of the child
-                    Pen, 
+                    childPen, 
                     this.Origin);
 
                 //Add it to the children collection so that this method may end someday
                 Children.Add(child);
             }
         }
+
     }
 }

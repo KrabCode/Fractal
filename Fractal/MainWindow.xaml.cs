@@ -35,15 +35,16 @@ namespace Fractal
         private Random _random = new Random();
        
 
-        private double _deviation = 0;
+        private double _childDeviation = 0;
         private double _piOffset = 0;
-        private int _detail = 6;
+        private int _generations = 6;
         private int _childCount = 4;
         private int _penOpacity = 50;
         private int _penWidth = 1;
-        private int _size = 20;
+        private int _zoomLevel = 20;
         private int _resolutionX = 1920;
         private int _resolutionY = 1080;
+        private double _childHueChange = 0;
         private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
         private Brush _brushBackground = new SolidBrush(Color.White);
         private int _rootCount = 1;
@@ -54,8 +55,7 @@ namespace Fractal
         private string _autosaveDirectory = "";
         private double _deviationChangeBetweenFrames = 1;
         private LineStyle _lineStyle = LineStyle.Normal;
-        private System.Drawing.Drawing2D.CompositingQuality _graphicsQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
-        private double _relativeChildLength = 1;
+        private double _childLengthRelativeToParent = 1;
         #endregion
 
         public MainWindow()
@@ -69,7 +69,7 @@ namespace Fractal
             _logic = new Logic();
             _logic.RedrawImage += _logic_Redraw;
 
-            DrawTree();
+            TryDrawTree();
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Fractal
                                 _animatingForwards = true;                                
                             }
                         }
-                        DrawTree();
+                        TryDrawTree();
                     }
                     imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
                 }));
@@ -135,9 +135,23 @@ namespace Fractal
             return null;
         }
 
-        private void DrawTree()
+        private void TryDrawTree()
         {
-            Task t = Task.Run(delegate { _logic.DrawTree(_resolutionX, _resolutionY, _deviation, _detail, _childCount, _penForeground, _brushBackground, _size, _piOffset, _rootCount, _lineStyle, _graphicsQuality, _relativeChildLength); });
+            Task t = Task.Run(delegate {
+                _logic.DrawTree(_resolutionX,
+                    _resolutionY,
+                    _generations,
+                    _rootCount,
+                    _childCount,
+                    _zoomLevel,
+                    _piOffset,
+                    _childDeviation,
+                    _childLengthRelativeToParent,
+                    _childHueChange,
+                    _penForeground,
+                    _brushBackground,
+                    _lineStyle);
+            });
         }
 
         #region Save button wiring
@@ -243,38 +257,38 @@ namespace Fractal
         #region Slider wiring
         private void sliderDeviation_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _deviation = Math.Round(sliderDeviation.Value,0);
-            DrawTree();
+            _childDeviation = Math.Round(sliderDeviation.Value,0);
+            TryDrawTree();
         }
 
         private void sliderSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _size = (int)sliderSize.Value;
-            DrawTree();
+            _zoomLevel = (int)sliderSize.Value;
+            TryDrawTree();
         }
 
         private void sliderDetail_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _detail = (int)sliderDetail.Value;
-            DrawTree();
+            _generations = (int)sliderDetail.Value;
+            TryDrawTree();
         }
         
         private void sliderRootCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _rootCount = (int)sliderRootCount.Value;
-            DrawTree();
+            TryDrawTree();
         }
 
         private void sliderChildCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _childCount = (int)sliderChildCount.Value;
-            DrawTree();
+            TryDrawTree();
         }
         
         private void sliderPiOffset_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _piOffset = sliderPiOffset.Value;
-            DrawTree();
+            TryDrawTree();
         }
 
         #endregion
@@ -295,7 +309,7 @@ namespace Fractal
 
                 //adjust global settings as per the user's wishes and redraw main surface with new settings
                 _penForeground = new Pen(Color.FromArgb(_penOpacity, cd.Color), _penWidth);
-                DrawTree();
+                TryDrawTree();
             }
 
         }
@@ -314,7 +328,7 @@ namespace Fractal
 
                 //adjust global settings as per the user's wishes and redraw main surface with new settings
                 _brushBackground = new SolidBrush(cd.Color);
-                DrawTree();
+                TryDrawTree();
             }
         }
 
@@ -334,7 +348,7 @@ namespace Fractal
                     sliderDeviation.Value = 0;
                     _animateAndSave = (bool)checkboxAutosave.IsChecked;
                     
-                    DrawTree();
+                    TryDrawTree();
                 }
                 else
                 {
@@ -347,21 +361,21 @@ namespace Fractal
         {
             _animate = (bool)checkboxAnimate.IsChecked;
             checkboxAutosave.IsChecked = false;
-            DrawTree();
+            TryDrawTree();
         }
 
         private void sliderPenWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _penWidth = (int)sliderPenWidth.Value;
             _penForeground = new Pen(Color.FromArgb(_penOpacity, _penForeground.Color), _penWidth);
-            DrawTree();
+            TryDrawTree();
         }
 
         private void sliderPenOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _penOpacity = (int)sliderPenOpacity.Value;
             _penForeground = new Pen(Color.FromArgb( _penOpacity,_penForeground.Color), _penWidth);
-            DrawTree();
+            TryDrawTree();
         }
 
         private Color GetOppositeColor(Color original)
@@ -385,7 +399,7 @@ namespace Fractal
                     if(resolutionX > 50)
                     {
                         _resolutionX = resolutionX;
-                        DrawTree();
+                        TryDrawTree();
                     }
                    
                 }
@@ -406,7 +420,7 @@ namespace Fractal
                     if(resolutionY > 50)
                     {
                         _resolutionY = resolutionY;
-                        DrawTree();
+                        TryDrawTree();
                     }
                 }
                 catch (Exception ex)
@@ -480,13 +494,19 @@ namespace Fractal
                         break;
                     }                
             }
-            DrawTree();
+            TryDrawTree();
         }
 
         private void sliderRelativeChildLength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _relativeChildLength = sliderRelativeChildLength.Value;
-            DrawTree();
+            _childLengthRelativeToParent = sliderRelativeChildLength.Value;
+            TryDrawTree();
+        }
+
+        private void sliderHueChange_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _childHueChange = (int)sliderHueChange.Value;
+            TryDrawTree();
         }
     }
 }
