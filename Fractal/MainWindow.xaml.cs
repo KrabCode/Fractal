@@ -113,7 +113,8 @@ namespace Fractal
                             }
                             else
                             {
-                                _animatingForwards = false;                                
+                                _animatingForwards = false;
+                                TryDrawTree();
                             }
                         }
                         else
@@ -124,10 +125,10 @@ namespace Fractal
                             }
                             else
                             {
-                                _animatingForwards = true;                                
+                                _animatingForwards = true;
+                                TryDrawTree();
                             }
                         }
-                        TryDrawTree();
                     }
                     imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
                 }));
