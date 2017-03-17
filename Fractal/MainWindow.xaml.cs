@@ -68,16 +68,16 @@ namespace Fractal
             Settings = new List<Parameter>();
             SettingsMap = new Dictionary<string, Parameter>();
 
-            Settings.Add(new Parameter() { Name = "Deviation", Value = 15, MinimumValue = 0, MaximumValue = 360 });
-            Settings.Add(new Parameter() { Name = "Pi offset", Value = 0, MinimumValue = -10, MaximumValue = 10 });
-            Settings.Add(new Parameter() { Name = "Generations", Value = 3, MinimumValue = 1, MaximumValue = 15 });
-            Settings.Add(new Parameter() { Name = "Child count", Value = 4, MinimumValue = 2, MaximumValue = 15});
-            Settings.Add(new Parameter() { Name = "Pen opacity", Value = 80, MinimumValue = 1, MaximumValue = 254 });
-            Settings.Add(new Parameter() { Name = "Pen width", Value = 2, MinimumValue = 1, MaximumValue = 20 });
-            Settings.Add(new Parameter() { Name = "Zoom level", Value = 80, MinimumValue = 0, MaximumValue = 3000 });
-            Settings.Add(new Parameter() { Name = "Hue change", Value = 0, MinimumValue = 0, MaximumValue = 360 });
-            Settings.Add(new Parameter() { Name = "Root count", Value = 4, MinimumValue = 1, MaximumValue = 10 });
-            Settings.Add(new Parameter() { Name = "Child length", Value = 1, MinimumValue = 0, MaximumValue = 2 });
+            Settings.Add(new Parameter() { Name = "Deviation", Value = 15, MinimumValue = 0, MaximumValue = 360, TooltipPrecision=3});
+            Settings.Add(new Parameter() { Name = "Pi offset", Value = 0, MinimumValue = -10, MaximumValue = 10, TooltipPrecision = 3 });
+            Settings.Add(new Parameter() { Name = "Generations", Value = 3, MinimumValue = 1, MaximumValue = 15, TooltipPrecision = 0 });
+            Settings.Add(new Parameter() { Name = "Child count", Value = 4, MinimumValue = 2, MaximumValue = 15, TooltipPrecision = 0 });
+            Settings.Add(new Parameter() { Name = "Pen opacity", Value = 80, MinimumValue = 1, MaximumValue = 254, TooltipPrecision = 0 });
+            Settings.Add(new Parameter() { Name = "Pen width", Value = 2, MinimumValue = 1, MaximumValue = 20, TooltipPrecision = 0});
+            Settings.Add(new Parameter() { Name = "Zoom level", Value = 80, MinimumValue = 0, MaximumValue = 3000, TooltipPrecision = 1});
+            Settings.Add(new Parameter() { Name = "Hue change", Value = 0, MinimumValue = 0, MaximumValue = 360, TooltipPrecision = 0});
+            Settings.Add(new Parameter() { Name = "Root count", Value = 4, MinimumValue = 1, MaximumValue = 10, TooltipPrecision = 0});
+            Settings.Add(new Parameter() { Name = "Child length", Value = 1, MinimumValue = 0, MaximumValue = 2, TooltipPrecision = 3 });
 
            
 
@@ -143,12 +143,12 @@ namespace Fractal
                             p.Value -= p.AnimationChangePerFrame;
                         }
 
-                        if(p.Value == p.AnimatedFrom)
+                        if(p.Value <= p.AnimatedFrom)
                         {
                             p.AnimatingForwards = true;
                         }
 
-                        if (p.Value == p.AnimatedTo)
+                        if (p.Value >= p.AnimatedTo)
                         {
                             p.AnimatingForwards = false;
                         }
@@ -186,6 +186,49 @@ namespace Fractal
         }
 
         #region Save button wiring
+       
+
+        
+
+        private void btSave_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (displayedBitmap != null)
+            {
+                Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
+                sfd.Title = "Save image";
+                sfd.Filter = ".png|*.png|.bmp|*.bmp|.jpg|*.jpg|.gif(stationary)|*.gif";
+                //find the best possible name for the new file,
+                //so that the user doesn't have to type anything or overwrite when lazy
+                string initialDirectory = sfd.InitialDirectory;
+                sfd.FileName += "Image_" + GetVacantSuffix();
+                KnownImageFormat format;
+                if ((bool)sfd.ShowDialog())
+                {
+                    string ext = System.IO.Path.GetExtension(sfd.FileName);
+                    switch (ext)
+                    {
+                        case ".jpg":
+                            format = KnownImageFormat.jpeg;
+                            break;
+                        case ".bmp":
+                            format = KnownImageFormat.bmp;
+                            break;
+                        case ".gif":
+                            format = KnownImageFormat.gif;
+                            break;
+                        default:
+                            format = KnownImageFormat.png;
+                            break;
+
+                    }
+
+                    SaveImageToFile(sfd.FileName,
+                        displayedBitmap,
+                        format);
+                }
+            }
+        }
+
         public void SaveImageToFile(string filePath, Bitmap image, KnownImageFormat format)
         {
 
@@ -235,7 +278,7 @@ namespace Fractal
 
             return name;
         }
-        
+
         public char GetLetter()
         {
             // This method returns a random lowercase letter.
@@ -244,45 +287,7 @@ namespace Fractal
             char let = (char)('a' + num);
             return let;
         }
-                
-        private void btSave_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (displayedBitmap != null)
-            {
-                Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
-                sfd.Title = "Save image";
-                sfd.Filter = ".png|*.png|.bmp|*.bmp|.jpg|*.jpg|.gif(stationary)|*.gif";
-                //find the best possible name for the new file,
-                //so that the user doesn't have to type anything or overwrite when lazy
-                string initialDirectory = sfd.InitialDirectory;
-                sfd.FileName += "Image_" + GetVacantSuffix();
-                KnownImageFormat format;
-                if ((bool)sfd.ShowDialog())
-                {
-                    string ext = System.IO.Path.GetExtension(sfd.FileName);
-                    switch (ext)
-                    {
-                        case ".jpg":
-                            format = KnownImageFormat.jpeg;
-                            break;
-                        case ".bmp":
-                            format = KnownImageFormat.bmp;
-                            break;
-                        case ".gif":
-                            format = KnownImageFormat.gif;
-                            break;
-                        default:
-                            format = KnownImageFormat.png;
-                            break;
 
-                    }
-
-                    SaveImageToFile(sfd.FileName,
-                        displayedBitmap,
-                        format);
-                }
-            }
-        }
         #endregion
 
         #region Slider wiring
@@ -345,8 +350,8 @@ namespace Fractal
             return Color.FromArgb(r, g, b);
         }
         #endregion
-
-        #region Animation and autosave checkbox wiring
+        
+        /*
         private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
@@ -369,10 +374,7 @@ namespace Fractal
             }
         }
 
-        
-
-        
-        #endregion
+        */
 
         #region Resolution wiring
         private void tbResolutionX_TextChanged(object sender, TextChangedEventArgs e)

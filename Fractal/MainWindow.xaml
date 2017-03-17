@@ -33,9 +33,9 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBox x:Name="tbResolutionX" Grid.Row="0" Grid.Column="0" Text="1000" HorizontalAlignment="Right" Margin="0,12,5,0" VerticalAlignment="Top" TextChanged="tbResolutionX_TextChanged" Height="18" Width="32"  />
-            <TextBox x:Name="tbResolutionY" Grid.Row="0" Grid.Column="1" Text="1000" HorizontalAlignment="Left" Margin="5,12,0,0" VerticalAlignment="Top" TextChanged="tbResolutionY_TextChanged" Height="18" Width="32"  />
-            <TextBlock Text="x" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="86,14,85,6" Height="16" Width="6" />
+            <TextBox x:Name="tbResolutionX" Grid.Row="0" Grid.Column="0" Text="1000" HorizontalAlignment="Right" Margin="0,12,5,0" VerticalAlignment="Center" TextChanged="tbResolutionX_TextChanged" Height="18" Width="32"  />
+            <TextBox x:Name="tbResolutionY" Grid.Row="0" Grid.Column="1" Text="1000" HorizontalAlignment="Left" Margin="5,12,0,0" VerticalAlignment="Center" TextChanged="tbResolutionY_TextChanged" Height="18" Width="32" RenderTransformOrigin="1.375,3.778"  />
+            <TextBlock Text="x" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Margin="86,14,85,6" Height="16" Width="6" />
             <ComboBox x:Name="comboLineStyle" Grid.Row="1"  SelectedIndex="0"  SelectionChanged="comboLineStyle_SelectionChanged" Grid.ColumnSpan="2" VerticalAlignment="Top">
                 <ComboBoxItem Content="Draw lines"/>
                 <ComboBoxItem Content="Draw polygons"/>
@@ -46,10 +46,9 @@
                 <ComboBoxItem Content="Fill closed curves"/>
             </ComboBox>
             <Button x:Name="btBackground" Content="Background" Grid.ColumnSpan="2" Grid.Row="2"  Click="btBackground_Click" Background="White" Foreground="Black" Height="20" />
-            <Button x:Name="btForeground" Content="Foreground" Grid.ColumnSpan="2" Grid.Row="3"  Click="btForeground_Click" Background="Black" Foreground="White" Height="20" />
-            <CheckBox x:Name="checkboxAutosave" Content="Save all frames.." Click="checkboxAutosave_Click" Grid.Row="4" Grid.ColumnSpan="2"/>
+            <Button x:Name="btForeground" Content="Foreground" Grid.ColumnSpan="2" Grid.Row="3"  Click="btForeground_Click" Background="Black" Foreground="White" Height="20" />            
         </Grid>
-        <ListView x:Name="lvSettings" HorizontalAlignment="Stretch" Grid.Column="4" Grid.Row="0">
+        <ListView x:Name="lvSettings" Grid.Column="4" Grid.Row="0" IsSynchronizedWithCurrentItem="True">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
@@ -63,7 +62,7 @@
                     <GridViewColumn Header="Slider">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Slider Value="{Binding Mode=TwoWay, Path= Value}" Minimum="{Binding Mode=TwoWay, Path=MinimumValue}" Maximum="{Binding Mode=TwoWay, Path=MaximumValue}" AutoToolTipPlacement="TopLeft" Width="100" ValueChanged="Slider_ValueChanged"/>
+                                <Slider Value="{Binding Mode=TwoWay, Path= Value}" Minimum="{Binding Mode=TwoWay, Path=MinimumValue}" Maximum="{Binding Mode=TwoWay, Path=MaximumValue}" AutoToolTipPrecision="{Binding TooltipPrecision}" AutoToolTipPlacement="TopLeft" Width="100" ValueChanged="Slider_ValueChanged"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -85,6 +84,13 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding AnimatedTo}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Step">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding AnimationChangePerFrame}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
