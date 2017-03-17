@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fractal"
         mc:Ignorable="d"
-        Title="Fractal" Height="648.552" Width="831.138">
+        Title="Fractal" Height="609.552" Width="1267.138">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="94*"/>
+            <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="508*"/>
+            <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="203*"/>
+            <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"/>
@@ -20,10 +20,6 @@
         <Image x:Name="imageMainView" Grid.Row="0" Grid.Column="2"/>
         <GridSplitter ResizeDirection="Columns" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <GridSplitter ResizeDirection="Columns" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-        
-                
-           
         <Button x:Name="btSave" Content="Save.." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" Grid.Column="2" />
         <Grid Grid.Row="0" Grid.Column="0" >
             <Grid.ColumnDefinitions>
@@ -36,8 +32,8 @@
                 <RowDefinition Height="33*"/>
                 <RowDefinition Height="430*"/>
             </Grid.RowDefinitions>
-            <TextBox x:Name="tbResolutionX" Grid.Row="0" Grid.Column="0" Text="1920" HorizontalAlignment="Right" Margin="0,12,5,3" VerticalAlignment="Top" TextChanged="tbResolutionX_TextChanged" Height="18" Width="32"  />
-            <TextBox x:Name="tbResolutionY" Grid.Row="0" Grid.Column="1" Text="1080" HorizontalAlignment="Left" Margin="5,12,0,3" VerticalAlignment="Top" TextChanged="tbResolutionY_TextChanged" Height="18" Width="32"  />
+            <TextBox x:Name="tbResolutionX" Grid.Row="0" Grid.Column="0" Text="1000" HorizontalAlignment="Right" Margin="0,12,5,3" VerticalAlignment="Top" TextChanged="tbResolutionX_TextChanged" Height="18" Width="32"  />
+            <TextBox x:Name="tbResolutionY" Grid.Row="0" Grid.Column="1" Text="1000" HorizontalAlignment="Left" Margin="5,12,0,3" VerticalAlignment="Top" TextChanged="tbResolutionY_TextChanged" Height="18" Width="32"  />
             <TextBlock Text="x" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="44,12,44,5" Height="16" Width="6" />
             <ComboBox x:Name="comboLineStyle" Grid.Row="1"  SelectedIndex="0"  SelectionChanged="comboLineStyle_SelectionChanged" Grid.ColumnSpan="2" VerticalAlignment="Top">
                 <ComboBoxItem Content="Draw lines"/>
