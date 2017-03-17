@@ -10,7 +10,7 @@ using System.Windows.Shapes;
 namespace Fractal
 {
     
-    public class Logic
+    public class TreeFactory
     {
         public delegate EventHandler RedrawEvent(object sender, RedrawEventArgs e);
         public event RedrawEvent RedrawImage;
