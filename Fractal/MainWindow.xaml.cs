@@ -35,27 +35,18 @@ namespace Fractal
         private Random _random = new Random();
        
 
-        private double _childDeviation = 0;
-        private double _piOffset = 0;
-        private int _generations = 6;
-        private int _childCount = 4;
+        
         private int _penOpacity = 50;
         private int _penWidth = 1;
-        private int _zoomLevel = 20;
         private int _resolutionX = 1920;
         private int _resolutionY = 1080;
-        private double _childHueChange = 0;
         private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
-        private Brush _brushBackground = new SolidBrush(Color.White);
-        private int _rootCount = 1;
-        private bool _animate = false;
-        private bool _animatingForwards = false;
+        private Brush _brushBackground = new SolidBrush(Color.White);        
         private bool _animateAndSave = false;
-        private int _autosavedPicsAlready = 0;
+        private bool _atLeastOneParameterIsAnimated = false;
         private string _autosaveDirectory = "";
-        private double _deviationChangeBetweenFrames = 1;
         private LineStyle _lineStyle = LineStyle.Normal;
-        private double _childLengthRelativeToParent = 1;
+        
 
         bool fullyLoaded = false;
         #endregion
@@ -81,7 +72,7 @@ namespace Fractal
             Settings.Add(new Parameter() { Name = "Pi offset", Value = 0, MinimumValue = -10, MaximumValue = 10 });
             Settings.Add(new Parameter() { Name = "Generations", Value = 3, MinimumValue = 1, MaximumValue = 15 });
             Settings.Add(new Parameter() { Name = "Child count", Value = 4, MinimumValue = 2, MaximumValue = 15});
-            Settings.Add(new Parameter() { Name = "Pen opacity", Value = 80, MinimumValue = 1, MaximumValue = 255 });
+            Settings.Add(new Parameter() { Name = "Pen opacity", Value = 80, MinimumValue = 1, MaximumValue = 254 });
             Settings.Add(new Parameter() { Name = "Pen width", Value = 2, MinimumValue = 1, MaximumValue = 20 });
             Settings.Add(new Parameter() { Name = "Zoom level", Value = 80, MinimumValue = 0, MaximumValue = 3000 });
             Settings.Add(new Parameter() { Name = "Hue change", Value = 0, MinimumValue = 0, MaximumValue = 360 });
@@ -120,9 +111,53 @@ namespace Fractal
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
+                    TryDrawNextAnimationFrame();
                 }));
             
             return null;
+        }
+
+        private void TryDrawNextAnimationFrame()
+        {
+            _atLeastOneParameterIsAnimated = false;
+            foreach (Parameter p in Settings)
+            {
+                if(p.Animated)
+                {
+                    _atLeastOneParameterIsAnimated = true;
+                }
+            }
+
+            if (_atLeastOneParameterIsAnimated)
+            {
+                foreach (Parameter p in Settings)
+                {
+                    if(p.Animated)
+                    {
+                        if(p.AnimatingForwards)
+                        {
+                            p.Value += p.AnimationChangePerFrame;
+                        }
+                        else
+                        {
+                            p.Value -= p.AnimationChangePerFrame;
+                        }
+
+                        if(p.Value == p.AnimatedFrom)
+                        {
+                            p.AnimatingForwards = true;
+                        }
+
+                        if (p.Value == p.AnimatedTo)
+                        {
+                            p.AnimatingForwards = false;
+                        }
+
+                    }
+                }
+                TryDrawTree();   
+            }
+
         }
 
         private void TryDrawTree()
@@ -132,7 +167,7 @@ namespace Fractal
                 _penForeground = new Pen(Color.FromArgb((int)SettingsMap["Pen opacity"].Value, _penForeground.Color), (int)SettingsMap["Pen width"].Value);
 
                 Task t = Task.Run(delegate {
-                    _treeFactory.DrawTree(_resolutionX,
+                    _treeFactory.CreateNewTree(_resolutionX,
                         _resolutionY,
                         (int)SettingsMap["Generations"].Value,
                         (int)SettingsMap["Root count"].Value,
@@ -254,8 +289,11 @@ namespace Fractal
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if(!_atLeastOneParameterIsAnimated)
+            {
+                TryDrawTree();
+            }
             
-            TryDrawTree();
         }        
 
         #endregion
@@ -298,7 +336,14 @@ namespace Fractal
                 TryDrawTree();
             }
         }
+        private Color GetOppositeColor(Color original)
+        {
+            int r = 255 - original.R;
+            int g = 255 - original.G;
+            int b = 255 - original.B;
 
+            return Color.FromArgb(r, g, b);
+        }
         #endregion
 
         #region Animation and autosave checkbox wiring
@@ -326,14 +371,7 @@ namespace Fractal
 
         
 
-        private Color GetOppositeColor(Color original)
-        {
-            int r = 255 - original.R;
-            int g = 255 - original.G;
-            int b = 255 - original.B;
-
-            return Color.FromArgb(r, g, b);
-        }
+        
         #endregion
 
         #region Resolution wiring
@@ -442,6 +480,11 @@ namespace Fractal
                         break;
                     }                
             }
+            TryDrawTree();
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
             TryDrawTree();
         }
     }

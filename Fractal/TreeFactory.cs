@@ -28,7 +28,7 @@ namespace Fractal
         /// <param name="zoomLevel">Length of the root line - inherited by every branch</param>
         /// <param name="piOffset">AngleMath uses π + piOffset in place of π for finding the endpoint of a branch</param>
         /// <param name="rootCount">Number of stems - effectively multiplying the number of branches</param>
-        public void DrawTree(int imageWidth,
+        public void CreateNewTree(int imageWidth,
             int imageHeight,
             int maxGenerations,
             int rootCount,
@@ -50,21 +50,20 @@ namespace Fractal
                 // https://www.youtube.com/watch?v=HgzGwKwLmgM
 
                 PointF center = new PointF(imageWidth / 2, imageHeight / 2);
-                List<Branch> tree = BuildTree(center, maxGenerations, childCount, childDeviation, piOffset, childLengthRelativeToParent, rootCount, zoomLevel, penForeground, childHueChange);
-                
+                List<Branch> tree = BuildBranches(center, maxGenerations, childCount, childDeviation, piOffset, childLengthRelativeToParent, rootCount, zoomLevel, penForeground, childHueChange);
                 Bitmap _offscreen = new Bitmap(imageWidth, imageHeight);
                 using (Graphics g = Graphics.FromImage(_offscreen))
                 {
                     g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight); //Fill background with background color                    
-                    DrawTreeToOffscreenBitmap(g, tree, center, lineStyle );          //Draw the tree that we built
+                    DrawBranches(g, tree, center, lineStyle );          //Draw the tree that we built
                     g.Flush();
                 }
                 busy = false;
-                RedrawImage(this, new RedrawEventArgs(_offscreen));                 //Render tree on the GUI thread
+                RedrawImage(this, new RedrawEventArgs(_offscreen));     //Render tree on the GUI thread
             }            
         }
 
-        List<Branch> BuildTree(PointF center,
+        List<Branch> BuildBranches(PointF center,
             int maxGenerations,
             int childCount,
             double childDeviation,
@@ -128,7 +127,7 @@ namespace Fractal
             return tree;
         }
 
-        void DrawTreeToOffscreenBitmap(Graphics g, List<Branch> branches, PointF center, LineStyle lineStyle)
+        void DrawBranches(Graphics g, List<Branch> branches, PointF center, LineStyle lineStyle)
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
             
