@@ -28,8 +28,8 @@ namespace Fractal
         /// <param name="zoomLevel">Length of the root line - inherited by every branch</param>
         /// <param name="piOffset">AngleMath uses π + piOffset in place of π for finding the endpoint of a branch</param>
         /// <param name="rootCount">Number of stems - effectively multiplying the number of branches</param>
-        public void CreateNewTree(int imageWidth,
-            int imageHeight,
+        public void CreateNewTree(Size imageDimensions,
+            Point centerOffset,
             int maxGenerations,
             int rootCount,
             int childCount,
@@ -49,12 +49,12 @@ namespace Fractal
                 // Queen - Don't Stop Me Now
                 // https://www.youtube.com/watch?v=HgzGwKwLmgM
 
-                PointF center = new PointF(imageWidth / 2, imageHeight / 2);
+                PointF center = new PointF(imageDimensions.Width / 2 + centerOffset.X, imageDimensions.Height / 2 + centerOffset.Y);
                 List<Branch> tree = BuildBranches(center, maxGenerations, childCount, childDeviation, piOffset, childLengthRelativeToParent, rootCount, zoomLevel, penForeground, childHueChange);
-                Bitmap _offscreen = new Bitmap(imageWidth, imageHeight);
+                Bitmap _offscreen = new Bitmap(imageDimensions.Width, imageDimensions.Height);
                 using (Graphics g = Graphics.FromImage(_offscreen))
                 {
-                    g.FillRectangle(brushBackground, 0, 0, imageWidth, imageHeight); //Fill background with background color                    
+                    g.FillRectangle(brushBackground, 0, 0, imageDimensions.Width, imageDimensions.Height); //Fill background with background color                    
                     DrawBranches(g, tree, center, lineStyle );          //Draw the tree that we built
                     g.Flush();
                 }
@@ -114,7 +114,11 @@ namespace Fractal
                         Pen childPen = new Pen(childColor, parentPen.Width );
                         
                         //make some kids
-                        tree[i].Populate(childCount, childDeviation, piOffset, relativeChildLength, childPen);
+                        tree[i].Populate(childCount - 1, //no idea why I have to use a magic number here, TODO: Investigate
+                            childDeviation,
+                            piOffset,
+                            relativeChildLength,
+                            childPen);
                         foreach (Branch babyBranch in tree[i].Children)
                         {
                             //add them to the main list

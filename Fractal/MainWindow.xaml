@@ -1,101 +1,115 @@
 ﻿<Window x:Class="Fractal.MainWindow"
+        x:Name="appMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fractal"
         mc:Ignorable="d"
-        Title="Fractal" Height="609.552" Width="1267.138">
+        Title="Fractal" Height="903.552" Width="1503.138">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="20*"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
-        <Image x:Name="imageMainView" Grid.Row="0" Grid.Column="2"/>
-        <GridSplitter ResizeDirection="Columns" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Image x:Name="imageMainView" Grid.Row="0" MouseMove="imageMainView_MouseMove" MouseWheel="imageMainView_MouseWheel"/>
         <GridSplitter ResizeDirection="Columns" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Button x:Name="btSave" Content="Save.." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" Grid.Column="2" />
-        <Grid Grid.Row="0" Grid.Column="0" >
+        <Button x:Name="btSave" Content="Save.." Click="btSave_Click_1" OpacityMask="#89000000" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="20" Width="36" />
+
+        <Grid Grid.Row="2" Grid.Column="2" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="10" />
+                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <TextBox x:Name="tbResolutionX" Grid.Row="0" Grid.Column="0" Text="1000" HorizontalAlignment="Right" Margin="0,12,5,0" VerticalAlignment="Center" TextChanged="tbResolutionX_TextChanged" Height="18" Width="32"  />
-            <TextBox x:Name="tbResolutionY" Grid.Row="0" Grid.Column="1" Text="1000" HorizontalAlignment="Left" Margin="5,12,0,0" VerticalAlignment="Center" TextChanged="tbResolutionY_TextChanged" Height="18" Width="32" RenderTransformOrigin="1.375,3.778"  />
-            <TextBlock Text="x" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Margin="86,14,85,6" Height="16" Width="6" />
-            <ComboBox x:Name="comboLineStyle" Grid.Row="1"  SelectedIndex="0"  SelectionChanged="comboLineStyle_SelectionChanged" Grid.ColumnSpan="2" VerticalAlignment="Top">
-                <ComboBoxItem Content="Draw lines"/>
-                <ComboBoxItem Content="Draw polygons"/>
-                <ComboBoxItem Content="Draw bezier curves"/>
-                <ComboBoxItem Content="Draw leaf curves"/>
-                <ComboBoxItem Content="Draw closed curves"/>
-                <ComboBoxItem Content="Fill polygons"/>
-                <ComboBoxItem Content="Fill closed curves"/>
-            </ComboBox>
-            <Button x:Name="btBackground" Content="Background" Grid.ColumnSpan="2" Grid.Row="2"  Click="btBackground_Click" Background="White" Foreground="Black" Height="20" />
-            <Button x:Name="btForeground" Content="Foreground" Grid.ColumnSpan="2" Grid.Row="3"  Click="btForeground_Click" Background="Black" Foreground="White" Height="20" />            
+
+            <ListView x:Name="lvSettings" Grid.Row="0" Grid.ColumnSpan="2">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Value">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Mode=TwoWay, Path=Value}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Slider">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Slider Value="{Binding Mode=TwoWay, Path= Value}" Minimum="{Binding Mode=TwoWay, Path=MinimumValue}" Maximum="{Binding Mode=TwoWay, Path=MaximumValue}" AutoToolTipPrecision="{Binding TooltipPrecision}" AutoToolTipPlacement="TopLeft" Width="100" ValueChanged="Slider_ValueChanged"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="∞">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Mode=TwoWay, Path=Animated}" Checked="CheckBox_Checked"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="From">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding AnimatedFrom}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="To">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding AnimatedTo}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Speed">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding AnimationChangePerFrame}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" />
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Width: "  Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                <TextBlock Text="Height: "  Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                <TextBox x:Name="tbResolutionX" Grid.Row="2" Grid.Column="1" Text="1000" VerticalAlignment="Center" HorizontalAlignment="Left" TextChanged="tbResolutionX_TextChanged" PreviewTextInput="TextBox_PreviewTextInput"   />
+                <TextBox x:Name="tbResolutionY" Grid.Row="3" Grid.Column="1" Text="1000" VerticalAlignment="Center" HorizontalAlignment="Left" TextChanged="tbResolutionY_TextChanged" PreviewTextInput="TextBox_PreviewTextInput"  />
+
+                <ComboBox x:Name="comboLineStyle" Grid.Row="1"  SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="comboLineStyle_SelectionChanged" Grid.ColumnSpan="2" >
+                    <ComboBoxItem Content="Draw lines"/>
+                    <ComboBoxItem Content="Draw polygons"/>
+                    <ComboBoxItem Content="Draw bezier curves"/>
+                    <ComboBoxItem Content="Draw leaf curves"/>
+                    <ComboBoxItem Content="Draw closed curves"/>
+                    <ComboBoxItem Content="Fill polygons"/>
+                    <ComboBoxItem Content="Fill closed curves"/>
+                </ComboBox>
+                <Button x:Name="btBackground" Content="Background" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" Click="btBackground_Click" Background="White" Foreground="Black" Height="20"  />
+                <Button x:Name="btForeground" Content="Foreground" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Click="btForeground_Click" Background="Black" Foreground="White" Height="20"  />
+            </Grid>
         </Grid>
-        <ListView x:Name="lvSettings" Grid.Column="4" Grid.Row="0" IsSynchronizedWithCurrentItem="True">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Value">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding Mode=TwoWay, Path=Value}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Slider">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Slider Value="{Binding Mode=TwoWay, Path= Value}" Minimum="{Binding Mode=TwoWay, Path=MinimumValue}" Maximum="{Binding Mode=TwoWay, Path=MaximumValue}" AutoToolTipPrecision="{Binding TooltipPrecision}" AutoToolTipPlacement="TopLeft" Width="100" ValueChanged="Slider_ValueChanged"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Loop">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding Mode=TwoWay, Path=Animated}" Checked="CheckBox_Checked"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="From">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding AnimatedFrom}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="To">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding AnimatedTo}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Step">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding AnimationChangePerFrame}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
     </Grid>
 </Window>

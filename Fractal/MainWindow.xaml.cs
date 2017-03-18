@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 public enum KnownImageFormat { bmp, png, jpeg, gif };
 public enum LineStyle { Normal, Bezier, Leaf, ClosedCurve, Polygon, FilledPolygon, FilledClosedCurve, Eighth, Ninth, Tenth };
@@ -34,25 +35,28 @@ namespace Fractal
         private Bitmap displayedBitmap;
         private Random _random = new Random();
        
-
-        
-        private int _penOpacity = 50;
-        private int _penWidth = 1;
         private int _resolutionX = 1920;
         private int _resolutionY = 1080;
         private Pen _penForeground = new Pen(new SolidBrush(Color.FromArgb(50, Color.Black)),1);
-        private Brush _brushBackground = new SolidBrush(Color.White);        
-        private bool _animateAndSave = false;
+        private int _lastPenWidth = 2;
+        private int _lastPenOpacity = 80;
+        private Brush _brushBackground = new SolidBrush(Color.White);
         private bool _atLeastOneParameterIsAnimated = false;
-        private string _autosaveDirectory = "";
         private LineStyle _lineStyle = LineStyle.Normal;
-        
+
+        public List<Parameter> Settings;
+        public Dictionary<string, Parameter> SettingsMap;
+
+        //for dragging the image
+        private System.Windows.Point _mousePositionWhenUserStartedDraggingImage;
+        private System.Windows.Point _offsetWhenUserStartedDraggingImage;
+        private bool _isUserDraggingImage;
 
         bool fullyLoaded = false;
         #endregion
 
-        public List<Parameter> Settings;
-        public Dictionary<string, Parameter> SettingsMap;
+        #region Initialization
+
         public MainWindow()
         {
             InitializeComponent();
@@ -68,18 +72,18 @@ namespace Fractal
             Settings = new List<Parameter>();
             SettingsMap = new Dictionary<string, Parameter>();
 
-            Settings.Add(new Parameter() { Name = "Deviation", Value = 15, MinimumValue = 0, MaximumValue = 360, TooltipPrecision=3});
-            Settings.Add(new Parameter() { Name = "Pi offset", Value = 0, MinimumValue = -10, MaximumValue = 10, TooltipPrecision = 3 });
-            Settings.Add(new Parameter() { Name = "Generations", Value = 3, MinimumValue = 1, MaximumValue = 15, TooltipPrecision = 0 });
-            Settings.Add(new Parameter() { Name = "Child count", Value = 4, MinimumValue = 2, MaximumValue = 15, TooltipPrecision = 0 });
-            Settings.Add(new Parameter() { Name = "Pen opacity", Value = 80, MinimumValue = 1, MaximumValue = 254, TooltipPrecision = 0 });
-            Settings.Add(new Parameter() { Name = "Pen width", Value = 2, MinimumValue = 1, MaximumValue = 20, TooltipPrecision = 0});
-            Settings.Add(new Parameter() { Name = "Zoom level", Value = 80, MinimumValue = 0, MaximumValue = 3000, TooltipPrecision = 1});
-            Settings.Add(new Parameter() { Name = "Hue change", Value = 0, MinimumValue = 0, MaximumValue = 360, TooltipPrecision = 0});
-            Settings.Add(new Parameter() { Name = "Root count", Value = 4, MinimumValue = 1, MaximumValue = 10, TooltipPrecision = 0});
-            Settings.Add(new Parameter() { Name = "Child length", Value = 1, MinimumValue = 0, MaximumValue = 2, TooltipPrecision = 3 });
-
-           
+            Settings.Add(new Parameter() { Name = "Deviation",      Value = 15, MinimumValue = 0,       MaximumValue = 360,     TooltipPrecision = 3    });            
+            Settings.Add(new Parameter() { Name = "Generations",    Value = 3,  MinimumValue = 1,       MaximumValue = 15,      TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Child count",    Value = 3,  MinimumValue = 2,       MaximumValue = 15,      TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Child length",   Value = 1,  MinimumValue = 0,       MaximumValue = 2,       TooltipPrecision = 3    });
+            Settings.Add(new Parameter() { Name = "Root count",     Value = 4,  MinimumValue = 1,       MaximumValue = 10,      TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Pen width",      Value = 3,  MinimumValue = 1,       MaximumValue = 20,      TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Pen opacity",    Value = 80, MinimumValue = 1,       MaximumValue = 254,     TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Hue change",     Value = 0,  MinimumValue = 0,       MaximumValue = 360,     TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Zoom level",     Value = 80, MinimumValue = 0,       MaximumValue = 3000,    TooltipPrecision = 1    });
+            Settings.Add(new Parameter() { Name = "Pi offset",      Value = 0,  MinimumValue = -10,     MaximumValue = 10,      TooltipPrecision = 3    });
+            Settings.Add(new Parameter() { Name = "X offset",       Value = 0,  MinimumValue = -1000,   MaximumValue = +1000,   TooltipPrecision = 0    });
+            Settings.Add(new Parameter() { Name = "Y offset",       Value = 0,  MinimumValue = -1000,   MaximumValue = +1000,   TooltipPrecision = 0    });
 
             foreach (Parameter p in Settings)
             {
@@ -97,8 +101,9 @@ namespace Fractal
             fullyLoaded = true;
             TryDrawTree();
         }
-        
+        #endregion
 
+        #region Redraw event and subsequent logic
         /// <summary>
         /// Fires when _logic finishes DrawTree(), the resulting image is passed using RedrawEventArgs.
         /// </summary>
@@ -125,6 +130,7 @@ namespace Fractal
                 if(p.Animated)
                 {
                     _atLeastOneParameterIsAnimated = true;
+                    break;
                 }
             }
 
@@ -157,18 +163,32 @@ namespace Fractal
                 }
                 TryDrawTree();   
             }
-
         }
 
         private void TryDrawTree()
         {
             if(fullyLoaded)
             {
-                _penForeground = new Pen(Color.FromArgb((int)SettingsMap["Pen opacity"].Value, _penForeground.Color), (int)SettingsMap["Pen width"].Value);
+                try //object may be used by user dragging
+                {
+                    
+                    //ajdust pen if settings changed
+                    if (_lastPenOpacity != (int)SettingsMap["Pen opacity"].Value || _lastPenWidth != (int)SettingsMap["Pen width"].Value)
+                    {
+                        _lastPenOpacity = (int)SettingsMap["Pen opacity"].Value;
+                        _lastPenWidth = (int)SettingsMap["Pen width"].Value;
+
+                        _penForeground = new Pen(Color.FromArgb((int)SettingsMap["Pen opacity"].Value, _penForeground.Color), (int)SettingsMap["Pen width"].Value);                       
+                    }
+                } catch (Exception e)
+                {
+                    
+                    Console.WriteLine(e.Message + ":\n"+ e.StackTrace );
+                }
 
                 Task t = Task.Run(delegate {
-                    _treeFactory.CreateNewTree(_resolutionX,
-                        _resolutionY,
+                    _treeFactory.CreateNewTree(new System.Drawing.Size(new System.Drawing.Point(_resolutionX, _resolutionY)),
+                        new System.Drawing.Point((int)SettingsMap["X offset"].Value, (int)SettingsMap["Y offset"].Value),
                         (int)SettingsMap["Generations"].Value,
                         (int)SettingsMap["Root count"].Value,
                         (int)SettingsMap["Child count"].Value,
@@ -184,11 +204,12 @@ namespace Fractal
             }
             
         }
+        #endregion
 
         #region Save button wiring
-       
 
-        
+
+
 
         private void btSave_Click_1(object sender, RoutedEventArgs e)
         {
@@ -318,7 +339,7 @@ namespace Fractal
                 btForeground.Foreground = new System.Windows.Media.SolidColorBrush(_mediaColorOpposite);
 
                 //adjust global settings as per the user's wishes and redraw main surface with new settings
-                _penForeground = new Pen(Color.FromArgb(_penOpacity, cd.Color), _penWidth);
+                _penForeground = new Pen(Color.FromArgb((int)SettingsMap["Pen opacity"].Value, cd.Color), (int)SettingsMap["Pen width"].Value);
                 TryDrawTree();
             }
 
@@ -350,31 +371,72 @@ namespace Fractal
             return Color.FromArgb(r, g, b);
         }
         #endregion
-        
-        /*
-        private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
+
+        #region Line Style Selection
+        private void comboLineStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
+            int itemIndex = comboLineStyle.SelectedIndex;
+            switch (itemIndex)
             {
-                fbd.Description = "Select or create a folder to save all the deviations of the selected settings to:";
-                DialogResult result = fbd.ShowDialog();
-
-                if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    _autosaveDirectory = fbd.SelectedPath + "\\";
-                    // sliderDeviation.Value = 0;
-                    _animateAndSave = (bool)checkboxAutosave.IsChecked;
-                    
-                    TryDrawTree();
-                }
-                else
-                {
-                    checkboxAutosave.IsChecked = false;
-                }
+                case 0:
+                    {
+                        _lineStyle = LineStyle.Normal;
+                        break;
+                    }
+                case 1:
+                    {
+                        _lineStyle = LineStyle.Polygon;
+                        break;
+                    }
+                case 2:
+                    {
+                        _lineStyle = LineStyle.Bezier;
+                        break;
+                    }
+                case 3:
+                    {
+                        _lineStyle = LineStyle.Leaf;
+                        break;
+                    }
+                case 4:
+                    {
+                        _lineStyle = LineStyle.ClosedCurve;
+                        break;
+                    }
+                case 5:
+                    {
+                        _lineStyle = LineStyle.FilledPolygon;
+                        break;
+                    }
+                case 6:
+                    {
+                        _lineStyle = LineStyle.FilledClosedCurve;
+                        break;
+                    }
+                case 7:
+                    {
+                        _lineStyle = LineStyle.Eighth;
+                        break;
+                    }
+                case 8:
+                    {
+                        _lineStyle = LineStyle.Ninth;
+                        break;
+                    }
+                case 9:
+                    {
+                        _lineStyle = LineStyle.Tenth;
+                        break;
+                    }
+                default:
+                    {
+                        _lineStyle = LineStyle.Normal;
+                        break;
+                    }
             }
+            TryDrawTree();
         }
-
-        */
+        #endregion        
 
         #region Resolution wiring
         private void tbResolutionX_TextChanged(object sender, TextChangedEventArgs e)
@@ -421,73 +483,103 @@ namespace Fractal
 
         #endregion
 
-        private void comboLineStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        #region Mouse-Image interaction
+
+        private void imageMainView_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            int itemIndex = comboLineStyle.SelectedIndex;
-            switch (itemIndex)
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                case 0:
-                    {
-                        _lineStyle = LineStyle.Normal;
-                        break;
-                    }
-                case 1:
-                    {
-                        _lineStyle = LineStyle.Polygon;                        
-                        break;
-                    }
-                case 2:
-                    {
-                        _lineStyle = LineStyle.Bezier;                        
-                        break;
-                    }
-                case 3:
-                    {
-                        _lineStyle = LineStyle.Leaf;                        
-                        break;
-                    }
-                case 4:
-                    {
-                        _lineStyle = LineStyle.ClosedCurve;
-                        break;
-                    }
-                case 5:
-                    {
-                        _lineStyle = LineStyle.FilledPolygon;
-                        break;
-                    }
-                case 6:
-                    {
-                        _lineStyle = LineStyle.FilledClosedCurve;
-                        break;
-                    }
-                case 7:
-                    {
-                        _lineStyle = LineStyle.Eighth;
-                        break;
-                    }
-                case 8:
-                    {
-                        _lineStyle = LineStyle.Ninth;
-                        break;
-                    }
-                case 9:
-                    {
-                        _lineStyle = LineStyle.Tenth;
-                        break;
-                    }
-                default:
-                    {
-                        _lineStyle = LineStyle.Normal;
-                        break;
-                    }                
+                if(_isUserDraggingImage)
+                {
+                    System.Windows.Point _mousePositionCurrent = Mouse.GetPosition(appMainWindow);
+                    System.Windows.Point _mousePosDifference = new System.Windows.Point(
+                       _mousePositionCurrent.X - _mousePositionWhenUserStartedDraggingImage.X ,
+                       _mousePositionCurrent.Y - _mousePositionWhenUserStartedDraggingImage.Y );
+
+                    bool previousXoffsetAnimatedValue = SettingsMap["X offset"].Animated;
+                    bool previousYoffsetAnimatedValue = SettingsMap["Y offset"].Animated;
+
+                    SettingsMap["X offset"].Animated = true;
+                    SettingsMap["X offset"].Animated = true;
+
+                    SettingsMap["X offset"].Value = _offsetWhenUserStartedDraggingImage.X + _mousePosDifference.X ;
+                    SettingsMap["Y offset"].Value = _offsetWhenUserStartedDraggingImage.Y + _mousePosDifference.Y ;
+
+
+                    SettingsMap["X offset"].Animated = previousXoffsetAnimatedValue;
+                    SettingsMap["X offset"].Animated = previousYoffsetAnimatedValue;
+
+
+                }
+                else
+                {
+                    _isUserDraggingImage = true;
+                    _mousePositionWhenUserStartedDraggingImage = Mouse.GetPosition(appMainWindow);
+                    _offsetWhenUserStartedDraggingImage = new System.Windows.Point(SettingsMap["X offset"].Value, SettingsMap["Y offset"].Value);
+                }
+               
             }
-            TryDrawTree();
+            if (Mouse.LeftButton == MouseButtonState.Released)
+            {
+                _isUserDraggingImage = false;
+            }
         }
 
+        private void imageMainView_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if(e.Delta != 0 && SettingsMap["Zoom level"].Value + e.Delta / 5 > 0)
+            {
+                SettingsMap["Zoom level"].Value += e.Delta / 5;
+            }
+        }
+        #endregion
+
+        #region Regex
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            string text = e.Text;
+            if (!IsTextNumerical(text))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private static bool IsTextNumerical(string text)
+        {
+            Regex regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
+            return !regex.IsMatch(text);
+        }
+        #endregion
+
+        //called by loop checkboxes
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             TryDrawTree();
         }
+
+        /*
+        private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select or create a folder to save all the deviations of the selected settings to:";
+                DialogResult result = fbd.ShowDialog();
+
+                if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    _autosaveDirectory = fbd.SelectedPath + "\\";
+                    // sliderDeviation.Value = 0;
+                    _animateAndSave = (bool)checkboxAutosave.IsChecked;
+                    
+                    TryDrawTree();
+                }
+                else
+                {
+                    checkboxAutosave.IsChecked = false;
+                }
+            }
+        }
+
+        */
     }
 }

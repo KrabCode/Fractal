@@ -10,7 +10,7 @@ namespace Fractal
     public class Parameter : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public string Name { get; set; }
+        
         private bool _IsFirstChange = true;
         private double _value;
         public double Value
@@ -32,11 +32,11 @@ namespace Fractal
                     {
                         _IsFirstChange = false;
                     }
-                    
-                }
+                }                
             }
         }
 
+        public string Name { get; set; }
         public double MinimumValue { get; set; }
         public double MaximumValue { get; set; }
         public bool Animated { get; set; }
