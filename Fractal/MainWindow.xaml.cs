@@ -44,6 +44,10 @@ namespace Fractal
         private bool _atLeastOneParameterIsAnimated = false;
         private LineStyle _lineStyle = LineStyle.Normal;
 
+        private bool _autosaving;
+        private string _autosaveDirectory;
+        private int _autosavedAlready;
+
         public List<Parameter> Settings;
         public Dictionary<string, Parameter> SettingsMap;
 
@@ -111,14 +115,19 @@ namespace Fractal
         /// <param name="e">e.image should contain the resulting image to draw onto the main drawing surface</param>
         /// <returns></returns>
         private EventHandler _logic_Redraw(object sender, RedrawEventArgs e)
-        {                 
+        {
+            
             displayedBitmap = new Bitmap(e.imageToDraw);
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);
+                    imageMainView.Source = BitmapConverter.Bitmap2BitmapSource(e.imageToDraw);                    
                     TryDrawNextAnimationFrame();
                 }));
-            
+            if (_autosaving)
+            {
+                
+                SaveImageToFile(_autosaveDirectory + _autosavedAlready++ + ".bmp", displayedBitmap, KnownImageFormat.bmp);
+            }
             return null;
         }
 
@@ -555,6 +564,36 @@ namespace Fractal
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             TryDrawTree();
+        }
+
+        private void checkBoxAutosave_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool) checkBoxAutosave.IsChecked)
+            {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    fbd.Description = "Select or create a folder to save all the deviations of the selected settings to:";
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        _autosaveDirectory = fbd.SelectedPath + "\\" + GetVacantSuffix();
+                        _autosaving = (bool)checkBoxAutosave.IsChecked;
+
+                        TryDrawTree();
+                    }
+                    else
+                    {
+                        checkBoxAutosave.IsChecked = false;
+                    }
+                }
+            }
+            else
+            {
+                _autosaving = false;
+            }
+            
+
         }
 
         /*

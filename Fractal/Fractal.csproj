@@ -64,8 +64,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AngleMath.cs" />
+    <Compile Include="BitmapChest.cs" />
     <Compile Include="BitmapConverter.cs" />
     <Compile Include="Branch.cs" />
+    <Compile Include="Bresenhams.cs" />
     <Compile Include="ColorConverter.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="RedrawEventArgs.cs" />

@@ -111,5 +111,6 @@
                 <Button x:Name="btForeground" Content="Foreground" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Click="btForeground_Click" Background="Black" Foreground="White" Height="20"  />
             </Grid>
         </Grid>
+        <CheckBox x:Name="checkBoxAutosave" Content="Autosave" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="checkBoxAutosave_Click"/>
     </Grid>
 </Window>
