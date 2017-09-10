@@ -595,30 +595,6 @@ namespace Fractal
             
 
         }
-
-        /*
-        private void checkboxAutosave_Click(object sender, RoutedEventArgs e)
-        {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                fbd.Description = "Select or create a folder to save all the deviations of the selected settings to:";
-                DialogResult result = fbd.ShowDialog();
-
-                if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    _autosaveDirectory = fbd.SelectedPath + "\\";
-                    // sliderDeviation.Value = 0;
-                    _animateAndSave = (bool)checkboxAutosave.IsChecked;
-                    
-                    TryDrawTree();
-                }
-                else
-                {
-                    checkboxAutosave.IsChecked = false;
-                }
-            }
-        }
-
-        */
+        
     }
 }
